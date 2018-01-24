@@ -6,3 +6,35 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.btn {
+  border-radius: 50%;
+}
+
+.setting-btn {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 100px;
+  height: 100px;
+  background-color: blue;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+}
