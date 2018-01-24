@@ -11,8 +11,6 @@
  */
 export function renderElement(tagName, attributes, innerText, parentElement) {
     let elem = create(tagName)
-    let handlers = null
-    debugger
     if (attributes) {
         Object.keys(attributes).map((attName) => {
             return {name: attName, val: attributes[attName]}

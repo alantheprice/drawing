@@ -1,7 +1,9 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
+window.canvas = canvas
+window.ctx = ctx
 
-export default () => {
+export function init() {
     canvas.setAttribute('width', window.innerWidth)
     canvas.setAttribute('height', window.innerHeight)
     
@@ -9,6 +11,10 @@ export default () => {
     attachEvents('touchstart', 'touchmove', 'touchend')
     load(canvas)
     restorePath()
+}
+
+export function clear() {
+  ctx.clearRect(0,0, canvas.width, canvas.height)
 }
 
 function attachEvents(start, move, end) {
@@ -26,7 +32,7 @@ function startDrawing(startEvent) {
   let path = [getTopLeftFromEvent(startEvent)]
   return {
     next: (ev) => {
-      console.log('move', ev)
+      // console.log('move', ev)
       ev.preventDefault()
       ev.stopPropagation()
       path.push(getTopLeftFromEvent(ev))
@@ -64,6 +70,7 @@ function drawLine(points) {
   if (!points || !points.length) {
     return
   }
+  points = points.filter(f => !!f)
   ctx.beginPath()
   ctx.moveTo(points[0].t, points[0].l)
   ctx.lineWidth = 3
