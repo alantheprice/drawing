@@ -32,7 +32,6 @@ function startDrawing(startEvent) {
   let path = [getTopLeftFromEvent(startEvent)]
   return {
     next: (ev) => {
-      // console.log('move', ev)
       ev.preventDefault()
       ev.stopPropagation()
       path.push(getTopLeftFromEvent(ev))
