@@ -5,15 +5,21 @@ export class Path {
 
   constructor(canvas, context) {
     this.ctx = context
+    this.paths = []
+    this.canvas = canvas
     // setting defaults
-    this.updateSettings({
-      lineWidth: 1,
-      color: 'rgba(23,45,130,.8)'
-    })
+    this.settings = {
+      lineWidth: 5,
+      color: 'rgba(20,45,200,.5)'
+    }
     this.restorePath()
   }
 
-
+  undo() {
+    this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+    this.paths.pop()
+    this.drawAllPaths(this.paths)
+  }
 
   /**
    * Updates the line settings for the path
@@ -22,8 +28,7 @@ export class Path {
    * @memberof Path
    */
   updateSettings(settings) {
-    this.lineWidth = settings.lineWidth || this.lineWidth
-    this.color = settings.color || this.color
+    this.settings = Object.assign(this.settings, settings)
   }
 
   startDrawing(startEvent) {
@@ -33,23 +38,25 @@ export class Path {
         ev.preventDefault()
         ev.stopPropagation()
         path.push(getTopLeftFromEvent(ev))
-        this.drawLine(path)
+        this.drawLine(path, this.settings)
       },
       finish: () => {
-        this.savePath(path)
+        this.savePath(path, this.settings)
       }
     }
   }
 
-  drawLine(points) {
+  drawLine(points, settings) {
     if (!points || !points.length) {
       return
     }
+    console.log('start: ', points[0].t, points[0].l)
     points = points.filter(f => !!f)
     this.ctx.beginPath()
     this.ctx.moveTo(points[0].t, points[0].l)
-    this.ctx.lineWidth = this.lineWidth
-    this.ctx.fillStyle = this.color
+    this.ctx.lineWidth = settings.lineWidth
+    this.ctx.strokeStyle = settings.color
+
     points.forEach((points) => {
       this.ctx.lineTo(points.t, points.l)
     })
@@ -57,18 +64,24 @@ export class Path {
     this.ctx.restore()
   }
 
-  savePath(path) {
-    store.save('path', path)
+  savePath(path, settings) {
+    this.paths.push({path: path, settings: settings})
+    store.save('paths', this.paths)
   }
 
   restorePath() {
-    store.load('path')
-      .then((path) => {
-        if (!path) {
-          return
-        }
-        this.drawLine(path)
-      })
+    store.load('paths')
+      .then((paths) => this.drawAllPaths(paths))
+  }
+
+  drawAllPaths(paths) {
+    if (!paths || !paths.length) {
+      return
+    }
+    paths.forEach((pathDef) => {
+      this.drawLine(pathDef.path, pathDef.settings)
+    })
+    this.paths = paths
   }
 
 }

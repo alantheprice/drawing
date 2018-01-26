@@ -1,10 +1,33 @@
 import { renderElement } from './renderUtils.js'
 
-export default class ElementDefinition {
+/**
+ * Function to simplify building an ElementDefinition
+ * 
+ * @export
+ * @param {string} tagName 
+ * @param {string} className 
+ * @param {function(event, HTMLElement)} [clickHandle] 
+ * @returns {{tag: {attributes: Object, innerText: string}}}
+ */
+export function buildElement(tagName, className, clickHandle) {
+    var elementDef = {}
+    elementDef[tagName] = {
+        attributes: {class: className}
+    }
+    if (clickHandle) {
+        elementDef[tagName].handlers = {
+            click: clickHandle
+        }
+    }
+    return elementDef
+    // return new ElementDefinition(elementDef)
+}
+
+export class ElementDefinition {
     /**
      * Creates an instance of ElementDefinition.
      * @param {{tag: {attributes: Object, innerText: string}}} config
-     * @param {ElementDefinition[]} children 
+     * @param {ElementDefinition[]} [children] 
      * @memberof ElementDefinition
      */
     constructor(config, children) {

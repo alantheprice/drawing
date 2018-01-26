@@ -16,6 +16,10 @@ export function clear() {
   ctx.clearRect(0,0, canvas.width, canvas.height)
 }
 
+export function undo() {
+  path.undo()
+}
+
 function attachEvents(start, move, end) {
   canvas.addEventListener(start, (ev) => {
     let draw = path.startDrawing(ev)
