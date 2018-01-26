@@ -52,7 +52,7 @@ export class Path {
     if (!points || !points.length) {
       return
     }
-    // points = points.filter(f => !!f)
+    points = points.filter(f => !!f)
     this.ctx.beginPath()
     this.ctx.moveTo(points[0].t, points[0].l)
     this.ctx.lineWidth = settings.lineWidth
