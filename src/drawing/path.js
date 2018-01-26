@@ -33,12 +33,14 @@ export class Path {
 
   startDrawing(startEvent) {
     let path = [getTopLeftFromEvent(startEvent)]
+    console.log('start:', getTopLeftFromEvent(startEvent))
+    let lastEvent = getTopLeftFromEvent(startEvent)
     return {
       next: (ev) => {
         ev.preventDefault()
         ev.stopPropagation()
         path.push(getTopLeftFromEvent(ev))
-        this.drawLine(path, this.settings)
+        this.drawLine(path.slice(-2), this.settings)
       },
       finish: () => {
         this.savePath(path, this.settings)
@@ -50,8 +52,7 @@ export class Path {
     if (!points || !points.length) {
       return
     }
-    console.log('start: ', points[0].t, points[0].l)
-    points = points.filter(f => !!f)
+    // points = points.filter(f => !!f)
     this.ctx.beginPath()
     this.ctx.moveTo(points[0].t, points[0].l)
     this.ctx.lineWidth = settings.lineWidth
@@ -65,6 +66,7 @@ export class Path {
   }
 
   savePath(path, settings) {
+    debugger
     this.paths.push({path: path, settings: settings})
     store.save('paths', this.paths)
   }

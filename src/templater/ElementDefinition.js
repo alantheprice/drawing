@@ -20,7 +20,6 @@ export function buildElement(tagName, className, clickHandle) {
         }
     }
     return elementDef
-    // return new ElementDefinition(elementDef)
 }
 
 export class ElementDefinition {

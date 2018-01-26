@@ -1,4 +1,6 @@
 import { Path } from './path'
+import { LocalStore } from '../storage/localStorage'
+const store = new LocalStore()
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
@@ -14,6 +16,7 @@ export function init() {
 
 export function clear() {
   ctx.clearRect(0,0, canvas.width, canvas.height)
+  store.clear()
 }
 
 export function undo() {
@@ -23,10 +26,14 @@ export function undo() {
 function attachEvents(start, move, end) {
   canvas.addEventListener(start, (ev) => {
     let draw = path.startDrawing(ev)
-    canvas.addEventListener(end, (mouseupEv) => {
+    let finish = (mouseupEv) => {
       draw.finish()
       canvas.removeEventListener(move, draw.next)
-    })
+      canvas.removeEventListener(end, finish)
+    }
+
+    canvas.addEventListener(end, finish)
+
     canvas.addEventListener(move, draw.next)
   })
 }
