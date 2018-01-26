@@ -13,7 +13,7 @@ function createOverlay() {
   let overlay = buildElement('div', 'overlay-container')
   let undoButton = getButton('btn undo-btn', undo, 'undo')
   let settingButton = getButton('btn setting-btn', showSettings, 'settings')
-  let clearButton = getButton('btn clear-btn', clear, 'clear')
+  let clearButton = getButton('btn clear-btn', clear, 'delete_forever')
 
   let overlayDef = new ElementDefinition(overlay, [undoButton, clearButton, settingButton])
   overlayDef.render(document.body)
