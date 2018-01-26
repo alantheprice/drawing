@@ -6,6 +6,7 @@ export class Path {
   constructor(canvas, context) {
     this.ctx = context
     this.paths = []
+    this.redo = []
     this.canvas = canvas
     // setting defaults
     this.settings = {
@@ -17,7 +18,7 @@ export class Path {
 
   undo() {
     this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
-    this.paths.pop()
+    this.redo.push(this.paths.pop())
     this.drawAllPaths(this.paths)
   }
 
@@ -66,7 +67,6 @@ export class Path {
   }
 
   savePath(path, settings) {
-    debugger
     this.paths.push({path: path, settings: settings})
     store.save('paths', this.paths)
   }

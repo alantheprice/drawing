@@ -7,8 +7,8 @@ const ctx = canvas.getContext('2d')
 const path = new Path(canvas, ctx)
 
 export function init() {
-    canvas.setAttribute('width', window.innerWidth + '')
-    canvas.setAttribute('height', window.innerHeight + '')
+    // canvas.setAttribute('width', window.innerWidth + '')
+    // canvas.setAttribute('height', window.innerHeight + '')
     attachEvents('mousedown', 'mousemove', 'mouseup')
     attachEvents('touchstart', 'touchmove', 'touchend')
 

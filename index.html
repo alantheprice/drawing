@@ -8,8 +8,37 @@
   </head>
 
   <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" style="width: 100%; height: 100%; background-color: #eee;"></canvas>
+    <script>
+      (() => {
+        const canvas = document.getElementById('canvas')
+        let h = window.innerHeight
+        let w = window.innerWidth
+        let yc = h/2
+        let xc = w/2
+        canvas.setAttribute('width', window.innerWidth + '')
+        canvas.setAttribute('height', window.innerHeight + '')
+        const ctx = canvas.getContext('2d')
+        let fs = h / 5
+        // outline
+        let arcs = [[xc, yc, fs, 0, 2,'stroke'],[xc - (fs/2.5), yc - (fs/2.5), 10, 0, 2,'fill'],[xc + (fs/2.5), yc - (fs/2.5), 10, 0, 2, 'fill'],[xc, yc, fs/2, .1, .9,'stroke']];
+        arcs.forEach((p, i) => {
+          setTimeout(() => {
+            arc(p[0],p[1],p[2],p[3],p[4],p[5])
+          }, 300 * i)
+        })
+
+        function arc(l, t, r, s, m, func) {
+          ctx.beginPath();
+          ctx.arc(l, t, r, s * Math.PI, m * Math.PI, false);
+          ctx.lineWidth = 5;
+          ctx[func]();
+        }
+      })()
+    </script>
+    
     <script src="https://unpkg.com/es6-import" import="./src/app.js"></script>
+
   </body>
 
 </html>
