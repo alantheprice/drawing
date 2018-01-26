@@ -21,7 +21,7 @@ function createOverlay() {
 
 function getButton(className, clickHandler, iconName) {
   let button = buildElement('button', className, clickHandler)
-  let icon = buildElement('i', 'material-icons md-light md-48')
+  let icon = buildElement('i', 'material-icons md-light md-36')
   icon.i.innerText = iconName
   return new ElementDefinition(button, [icon])
 }
