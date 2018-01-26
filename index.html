@@ -3,8 +3,6 @@
 
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="./src/app.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
 
   <body>
@@ -16,8 +14,8 @@
         let w = window.innerWidth
         let yc = h/2
         let xc = w/2
-        canvas.setAttribute('width', window.innerWidth + '')
-        canvas.setAttribute('height', window.innerHeight + '')
+        canvas.setAttribute('width', w + '')
+        canvas.setAttribute('height', h + '')
         const ctx = canvas.getContext('2d')
         let fs = h / 5
         // outline
@@ -36,8 +34,9 @@
         }
       })()
     </script>
-    
-    <script src="https://unpkg.com/es6-import" import="./src/app.js"></script>
+    <link rel="stylesheet" href="./src/app.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script async src="https://unpkg.com/es6-import" import="./src/app.js"></script>
 
   </body>
 
