@@ -17,6 +17,7 @@ export class Path {
   }
 
   undo() {
+    console.log('begin undo')
     this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
     this.redo.push(this.paths.pop())
     this.drawAllPaths(this.paths)
@@ -54,20 +55,25 @@ export class Path {
       return
     }
     points = points.filter(f => !!f)
+    // this.ctx.save()
     this.ctx.beginPath()
     this.ctx.moveTo(points[0].t, points[0].l)
-    this.ctx.lineWidth = settings.lineWidth
-    this.ctx.strokeStyle = settings.color
-
     points.forEach((points) => {
       this.ctx.lineTo(points.t, points.l)
     })
+    this.ctx.lineWidth = settings.lineWidth
+    this.ctx.strokeStyle = settings.color
+    console.log(`color: ${this.ctx.strokeStyle}, ${settings.color}`)
     this.ctx.stroke()
-    this.ctx.restore()
+    // this.ctx.restore()
   }
 
   savePath(path, settings) {
-    this.paths.push({path: path, settings: settings})
+    this.paths.push({path: path, settings: {
+        color: settings.color, 
+        lineWidth: settings.lineWidth
+      }
+    })
     store.save('paths', this.paths)
   }
 
@@ -81,9 +87,13 @@ export class Path {
       return
     }
     paths.forEach((pathDef) => {
-      this.drawLine(pathDef.path, pathDef.settings)
+      console.log(`storedSetting: ${pathDef.settings.color}`)
+      // debugger
+      // colors don't get passed through correctly without a timeout.
+      setTimeout(() => this.drawLine(pathDef.path, pathDef.settings))
+      // this.drawLine(pathDef.path, pathDef.settings)
     })
-    this.paths = paths
+    // this.paths = paths
   }
 
 }
