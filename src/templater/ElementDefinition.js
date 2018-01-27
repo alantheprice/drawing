@@ -31,7 +31,7 @@ export class ElementDefinition {
      */
     constructor(config, children) {
         this.tagName = Object.keys(config)[0]
-        this.attributes = config[this.tagName].attributes || null
+        this.attr = config[this.tagName].attributes || null
         this.handlers = config[this.tagName].handlers || null
         this.innerText = config[this.tagName].innerText || null
         this.children = children
@@ -47,7 +47,7 @@ export class ElementDefinition {
         if (!this.tagName) {
             throw new Error('tagName must be defined')
         }
-        let scope = {element: renderElement(this.tagName, this.attributes, this.innerText, parentElement)}  
+        let scope = {element: renderElement(this.tagName, this.attr, this.innerText, parentElement)}  
         if (this.children) {
             scope.children = this.children.map((child) => {
                 if (!(child instanceof ElementDefinition)) {
@@ -56,18 +56,36 @@ export class ElementDefinition {
                 return child.render(scope.element)
             })
         }
-        this.addEventHandlers(scope.element)
+        addEventHandlers(scope.element, this.handlers)
         this.element = scope.element
         return scope.element
     }
 
-    addEventHandlers(elem) {
-        if (this.handlers) {
-            Object.keys(this.handlers).map((domEventName) => {
-                return {name: domEventName, handler: this.handlers[domEventName]}
-            }).forEach((ev) => {
-                elem.addEventListener(ev.name, ev.handler)
-            })
+    addClass(className) {
+        if (this.element) {
+            this.element.classList.add(className)
+        } else {
+            this.attr = this.attr || {}
+            this.attr.class = this.attr.class || ''
+            this.attr.class = [this.attr.class, className].join(' ')
         }
+    }
+
+    removeClass(className) {
+        if (this.element) {
+            this.element.classList.remove(className)
+        } else if (this.attr && this.attr.class.indexOf(className) > -1){
+            this.attr.class = this.attr.class.split(' ').filter((cn) => cn !== className).join(' ')
+        }
+    }
+}
+
+function addEventHandlers(elem, handlers) {
+    if (handlers) {
+        Object.keys(handlers).map((domEventName) => {
+            return {name: domEventName, handler: handlers[domEventName]}
+        }).forEach((ev) => {
+            elem.addEventListener(ev.name, ev.handler)
+        })
     }
 }

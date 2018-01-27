@@ -23,6 +23,10 @@ export function undo() {
   path.undo()
 }
 
+export function updateSettings(newSettings) {
+  path.updateSettings(newSettings)
+}
+
 function attachEvents(start, move, end) {
   canvas.addEventListener(start, (ev) => {
     let draw = path.startDrawing(ev)
