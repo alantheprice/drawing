@@ -3,8 +3,9 @@ const store = new LocalStore()
 
 export class Path {
 
-  constructor(canvas, context) {
+  constructor(canvas, context, clear) {
     this.ctx = context
+    this.clear = clear
     this.paths = []
     this.redo = []
     this.canvas = canvas
@@ -18,7 +19,7 @@ export class Path {
 
   undo() {
     console.log('begin undo')
-    this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
+    this.clear()
     this.redo.push(this.paths.pop())
     this.drawAllPaths(this.paths)
   }
@@ -33,15 +34,23 @@ export class Path {
     this.settings = Object.assign(this.settings, settings)
   }
 
-  startDrawing(startEvent) {
-    let path = [getTopLeftFromEvent(startEvent)]
-    console.log('start:', getTopLeftFromEvent(startEvent))
-    let lastEvent = getTopLeftFromEvent(startEvent)
+  /**
+   * 
+   * @memberof Path
+   */
+  startDrawing() {
+    let path = []
+    let lastEvent = null
     return {
-      next: (ev) => {
-        ev.preventDefault()
-        ev.stopPropagation()
-        path.push(getTopLeftFromEvent(ev))
+      start: (xy, ev, elem) => {
+        path.push(xy)
+        console.log('start:', xy)
+        lastEvent = Object.assign({}, xy)
+      },
+      move: (moveXY, moveRE, moveElem) => {
+        moveRE.preventDefault()
+        moveRE.stopPropagation()
+        path.push(moveXY)
         this.drawLine(path.slice(-2), this.settings)
       },
       finish: () => {
@@ -57,23 +66,20 @@ export class Path {
     points = points.filter(f => !!f)
     // this.ctx.save()
     this.ctx.beginPath()
-    this.ctx.moveTo(points[0].t, points[0].l)
+    this.ctx.moveTo(points[0].x, points[0].y)
     points.forEach((points) => {
-      this.ctx.lineTo(points.t, points.l)
+      this.ctx.lineTo(points.x, points.y)
     })
     this.ctx.lineWidth = settings.lineWidth
     this.ctx.strokeStyle = settings.color
-    console.log(`color: ${this.ctx.strokeStyle}, ${settings.color}`)
     this.ctx.stroke()
     // this.ctx.restore()
   }
 
   savePath(path, settings) {
-    this.paths.push({path: path, settings: {
-        color: settings.color, 
-        lineWidth: settings.lineWidth
-      }
-    })
+    this.paths.push({path: path, settings: Object.assign({}, settings)})
+    // this.clear()
+    // this.drawAllPaths(this.paths)
     store.save('paths', this.paths)
   }
 
@@ -87,7 +93,6 @@ export class Path {
       return
     }
     paths.forEach((pathDef) => {
-      console.log(`storedSetting: ${pathDef.settings.color}`)
       this.drawLine(pathDef.path, pathDef.settings)
     })
     this.paths = paths
@@ -95,16 +100,3 @@ export class Path {
 
 }
 
-function getTopLeftFromEvent(ev) {
-  if (ev.clientX) {
-    return {
-      t: ev.clientX,
-      l: ev.clientY
-    }
-  } else if (ev.type.indexOf('touch') > -1) {
-    return {
-      t: ev.touches[0].clientX,
-      l: ev.touches[0].clientY
-    }
-  }
-}

@@ -1,4 +1,7 @@
 import { renderElement } from './renderUtils.js'
+import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT } from '../eventHandling/event'
+
+const ELEM_DEF_PROPS = ['class', 'attributes', 'handlers', 'innerText']
 
 /**
  * Function to simplify building an ElementDefinition
@@ -30,7 +33,7 @@ export class ElementDefinition {
      * @memberof ElementDefinition
      */
     constructor(config, children) {
-        this.tagName = Object.keys(config)[0]
+        this.tagName = Object.keys(config).filter((key) => ELEM_DEF_PROPS.indexOf(key) === -1)[0]
         this.attr = config[this.tagName].attributes || config.attributes
         this.handlers = config[this.tagName].handlers || config.handlers || null
         this.innerText = config[this.tagName].innerText || config.innerText || ''
@@ -85,7 +88,11 @@ function addEventHandlers(elem, handlers) {
         Object.keys(handlers).map((domEventName) => {
             return {name: domEventName, handler: handlers[domEventName]}
         }).forEach((ev) => {
-            elem.addEventListener(ev.name, ev.handler)
+            if (ev.name === CUSTOM_DRAG_EVENT) {
+                addDragHandler(elem, ev.handler)
+            } else {
+                addEvent(elem, ev.name, ev.handler)
+            }
         })
     }
 }
