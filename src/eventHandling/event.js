@@ -17,15 +17,22 @@ export const CUSTOM_DRAG_EVENT = 'custom-drag-event'
 export function addDragHandler(element, handler) {
   addEvent(element, 'mousedown', (tl, ev, elem) => {
     handler.start(tl, ev, elem)
-
+    let finishTimeout = null
     let _finish = (endTl, endEv, elem) => {
+      clearTimeout(finishTimeout)
       handler.finish(endTl, endEv, elem)
       removeMoveEvent()
       removeStopEvent()
     }
 
     let removeStopEvent = addEvent(element, 'mouseup', _finish)
-    let removeMoveEvent = addEvent(element,  'mousemove', handler.move)
+    let removeMoveEvent = addEvent(element,  'mousemove', (mXY, mEV, elem) => {
+      clearTimeout(finishTimeout)
+      handler.move(mXY, mEV, elem)
+      finishTimeout = setTimeout(() => {
+        _finish(mXY, mEV, elem)
+      }, 500)
+    })
   })
 }
 

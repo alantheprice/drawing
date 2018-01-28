@@ -43,7 +43,7 @@ export class Path {
     let lastEvent = null
     return {
       start: (xy, ev, elem) => {
-        path.push(xy)
+        path = [xy]
         console.log('start:', xy)
         lastEvent = Object.assign({}, xy)
       },

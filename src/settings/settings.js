@@ -1,25 +1,20 @@
-import {
-  ElementDefinition,
-  buildElement
-} from '../templater/ElementDefinition'
-import {
-  addDragHandler,
-  addEvent,
-  CUSTOM_DRAG_EVENT
-} from '../eventHandling/event'
-
-export const SETTING_EVENTS = {
-  BRUSH_SIZE: 'brush-size',
-  COLOR: 'color',
-  SAVE: 'save'
-}
-let subscriptions = []
-let customColor = {
+import { ElementDefinition, buildElement } from '../templater/ElementDefinition'
+import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
+const DEFAULT_STARTING_COLOR = {
   r: 40,
   g: 40,
   b: 40,
   a: 1
 }
+export const SETTING_EVENTS = {
+  BRUSH_SIZE: 'brush-size',
+  COLOR: 'color',
+  SAVE: 'save'
+}
+
+let subscriptions = []
+let customColor = Object.assign({}, DEFAULT_STARTING_COLOR)
+
 
 export function getBrushLayout() {
   // let overlay = buildElement('div', 'brush-container')
@@ -69,6 +64,7 @@ function handleColorDrag() {
   return {
     start: (stXY, sRawEvent, elem) => {
       sPoint = stXY
+      color = Object.assign({}, DEFAULT_STARTING_COLOR)
     },
     move: (mXY, mRE, elem) => {
       let move = sPoint.x - mXY.x
