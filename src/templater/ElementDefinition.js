@@ -31,9 +31,9 @@ export class ElementDefinition {
      */
     constructor(config, children) {
         this.tagName = Object.keys(config)[0]
-        this.attr = config[this.tagName].attributes || null
-        this.handlers = config[this.tagName].handlers || null
-        this.innerText = config[this.tagName].innerText || null
+        this.attr = config[this.tagName].attributes || config.attributes
+        this.handlers = config[this.tagName].handlers || config.handlers || null
+        this.innerText = config[this.tagName].innerText || config.innerText || ''
         this.children = children
     }
 

@@ -76,28 +76,46 @@ body {
   background-color: rgba(120, 120, 120, .85);
 }
 
-.brush-container {
+.color-container {
   position: absolute;
-  right: 5px;
-  width: 60px;
-  bottom: 90px;
-  display: flex;
-  flex-direction: column;
+  right: 80px;
+  height: 60px;
+  bottom: 5px;
+  width: 0;
   padding: 10px;
-  max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s, opacity 0.85s ease-out;
+  transition: width 0.35s, opacity 0.85s ease-out;
   opacity: 0;
 }
 
-.brush-container.active {
+.color-container.active {
   opacity: 1;
-  max-height: 1000px;
-  transition: max-height 0.35s, opacity 0.05s ease-in;
+  width: calc(100vw - 80px);
+  transition: width 0.35s, opacity 0.05s ease-in;
 }
 
-.red-btn, .blue-btn, .green-btn {
-  margin: 10px 0;
+.inner-color-container {
+  position: absolute;
+  right: 80px;
+  height: 60px;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  opacity: 1;
+  z-index: 0;
+}
+
+.custom-color-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 10;
+  opacity: .99;
+}
+
+.red-btn, .blue-btn, .green-btn, .custom-color-btn {
+  margin: 0 10px;
 }
 
 .red-btn {

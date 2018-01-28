@@ -88,12 +88,9 @@ export class Path {
     }
     paths.forEach((pathDef) => {
       console.log(`storedSetting: ${pathDef.settings.color}`)
-      // debugger
-      // colors don't get passed through correctly without a timeout.
-      setTimeout(() => this.drawLine(pathDef.path, pathDef.settings))
-      // this.drawLine(pathDef.path, pathDef.settings)
+      this.drawLine(pathDef.path, pathDef.settings)
     })
-    // this.paths = paths
+    this.paths = paths
   }
 
 }

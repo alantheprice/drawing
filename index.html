@@ -27,14 +27,12 @@
         })
 
         function arc(l, t, r, s, m, func) {
-          ctx.save()
           ctx.lineWidth = 3
           ctx.beginPath()
           ctx.arc(l, t, r, s * Math.PI, m * Math.PI, false);
           ctx.lineWidth = 5
           ctx.strokeStyle = 'black'
           ctx[func]()
-          ctx.restore()
         }
       })()
     </script>
