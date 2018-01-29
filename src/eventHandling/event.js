@@ -65,17 +65,38 @@ export function addEvent(element, eventName, handler) {
   }
 }
 
-function getXY(ev) {
+function getXY(ev) { //, lastEvent) {
   if (ev.clientX) {
     return {
       x: ev.clientX,
       y: ev.clientY
     }
   } else if (ev.type.indexOf('touch') > -1 && ev.touches && ev.touches[0]) {
+    let touchX = ev.touches[0].clientX
+    let touchY = ev.touches[0].clientY
+    if (ev.touches.length > 1) {
+      let touches = ev.touches.filter((touch) => {
+        return !withinEdgeThreshold(touch.clientX)
+      })
+      if (touches.length) {
+        touchX = touches[0].clientX
+        touchY = touches[0].clientY
+      }
+    }
     return {
-      x: ev.touches[0].clientX,
-      y: ev.touches[0].clientY
+      x: touchX,
+      y: touchY
     }
   }
   return null
+}
+
+/**
+ * 
+ * 
+ * @param {number} x 
+ */
+function withinEdgeThreshold(x) {
+  let threshold = 50
+  return (x > threshold && x < (window.innerWidth  - threshold))
 }
