@@ -76,7 +76,7 @@ function getXY(ev) { //, lastEvent) {
     let touchY = ev.touches[0].clientY
     if (ev.touches.length > 1) {
       let touches = Array.from(ev.touches).filter((touch) => {
-        return !withinEdgeThreshold(touch.clientX)
+        return outsideEdgeThreshold(touch.clientX)
       })
       if (touches.length) {
         touchX = touches[0].clientX
@@ -96,7 +96,7 @@ function getXY(ev) { //, lastEvent) {
  * 
  * @param {number} x 
  */
-function withinEdgeThreshold(x) {
+function outsideEdgeThreshold(x) {
   let threshold = 50
   return (x > threshold && x < (window.innerWidth  - threshold))
 }
