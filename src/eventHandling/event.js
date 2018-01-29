@@ -97,6 +97,6 @@ function getXY(ev) { //, lastEvent) {
  * @param {number} x 
  */
 function outsideEdgeThreshold(x) {
-  let threshold = 50
+  let threshold = 70
   return (x > threshold && x < (window.innerWidth  - threshold))
 }
