@@ -65,7 +65,7 @@ export function addEvent(element, eventName, handler) {
   }
 }
 
-function getXY(ev) { //, lastEvent) {
+function getXY(ev) {
   if (ev.clientX) {
     return {
       x: ev.clientX,
@@ -84,7 +84,8 @@ function getTouchXY(ev) {
   // Here to attempt to ignore inadvertent edge clicks
   if (ev.touches.length > 1) {
     let touches = Array.from(ev.touches).filter((touch) => {
-      return outsideEdgeThreshold(touch.clientX)
+      return outsideEdgeThreshold(touch.clientX, window.innerWidth) &&
+        outsideEdgeThreshold(touch.clientY, window.innerHeight)
     })
     if (touches.length) {
       touchX = touches[0].clientX
@@ -100,9 +101,10 @@ function getTouchXY(ev) {
 /**
  * 
  * 
- * @param {number} x 
+ * @param {number} point 
+ * @param {number} totalDist
  */
-function outsideEdgeThreshold(x) {
+function outsideEdgeThreshold(point, totalDist) {
   let threshold = 70
-  return (x > threshold && x < (window.innerWidth  - threshold))
+  return (point > threshold && point < (totalDist  - threshold))
 }

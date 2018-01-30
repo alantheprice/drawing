@@ -19,7 +19,8 @@ const mimeTypes = {
     ".json": "application/json",
     ".png": "image/png",
     ".jpg": "image/jpg",
-    ".wav": "audio/wav"
+    ".wav": "audio/wav",
+    ".appcache": "text/cache-manifest"
 };
 
 http.createServer(function (request, response) {
