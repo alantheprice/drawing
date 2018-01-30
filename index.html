@@ -23,9 +23,9 @@
         // outline
         let arcs = [[xc, yc, fs, 0, 2,'stroke'],[xc - (fs/2.5), yc - (fs/2.5), 10, 0, 2,'fill'],[xc + (fs/2.5), yc - (fs/2.5), 10, 0, 2, 'fill'],[xc, yc, fs/2, .1, .9,'stroke']];
         arcs.forEach((p, i) => {
-          setTimeout(() => {
+          // setTimeout(() => {
             arc(p[0],p[1],p[2],p[3],p[4],p[5])
-          }, 300 * i)
+          // }, 300 * i)
         })
 
         function arc(l, t, r, s, m, func) {
@@ -39,7 +39,7 @@
     </script>
     <link rel="stylesheet" href="./app.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script async src="https://unpkg.com/es6-import" import="./src/app.js" cache-all="true"></script>
+    <script async src="https://unpkg.com/es6-import" import="./src/app.js" cache-all="false"></script>
 
   </body>
 
