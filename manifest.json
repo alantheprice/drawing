@@ -19,6 +19,7 @@
         "sizes": "192x192"
       }
     ],
+    "background_color": "rgb(40, 120, 240)",
     "start_url": "index.html"
   }
   
