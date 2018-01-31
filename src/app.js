@@ -57,7 +57,7 @@ function addServiceWorker() {
 function enablePush(serviceRegistration) {    
   let options = {
     userVisibleOnly: true,
-    applicationServerKey: 'some-pig'
+    applicationServerKey: 'TESTDATA'
   }
   serviceRegistration.pushManager.subscribe(options).then(
     function(pushSubscription) {
