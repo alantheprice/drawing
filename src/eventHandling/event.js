@@ -1,5 +1,5 @@
 const TOUCH_EVENT_MAP = {
-  click: 'click',
+  click: 'touchstart',
   mousedown: 'touchstart',
   mouseup: 'touchend',
   mousemove: 'touchmove'
@@ -47,6 +47,7 @@ export function addDragHandler(element, handler) {
  */
 export function addEvent(element, eventName, handler) {
   let handle = (ev) => {
+    ev.preventDefault()
     let xy = getXY(ev)
     if (!xy) { return }
     handler(xy, ev, element)
