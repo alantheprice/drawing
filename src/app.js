@@ -1,7 +1,11 @@
 import { init, clear, undo, updateSettings } from './drawing/drawing'
-import { ElementDefinition, buildElement } from './templater/ElementDefinition'
+import e from './templater/ElementDefinition'
 import { getBrushLayout, getColorLayout, subscribe, SETTING_EVENTS} from './settings/settings'
 let settingsShowing = false
+const div = e.div
+const button = e.button
+const i = e.i
+const E = e.E
 
 // initialize drawing
 setup()
@@ -26,19 +30,24 @@ function createOverlay() {
   // settings elements
   let colorLayout = getColorLayout()
 
-  let overlay = buildElement('div', 'overlay-container')
-  let undoButton = getButton('btn undo-btn', undo, 'undo')
-  let settingButton = getButton('btn setting-btn', () => showSettings([colorLayout]), 'settings')
-  let clearButton = getButton('btn clear-btn', clear, 'delete_forever')
-  let overlayDef = new ElementDefinition(overlay, [undoButton, clearButton, settingButton, colorLayout])
+  let overlayDef = div({class:'overlay-container'},
+    button({class:'btn undo-btn', click: undo},
+      i({class:'material-icons md-light md-36', innerText: 'undo'})
+    ),
+    button({class:'btn setting-btn', click: () => showSettings([colorLayout])},
+      i({class:'material-icons md-light md-36', innerText: 'settings'})
+    ),
+    button({class: 'btn clear-btn', click: clear},
+      i({class: 'material-icons md-light md-36', innerText: 'delete_forever'})
+    ),
+    colorLayout
+  )
+  // let overlay = div('overlay-container')
+  // let undoButton = getButton('btn undo-btn', undo, 'undo')
+  // let settingButton = getButton('btn setting-btn', () => showSettings([colorLayout]), 'settings')
+  // let clearButton = getButton('btn clear-btn', clear, 'delete_forever')
+  // let overlayDef = E(overlay, undoButton, clearButton, settingButton, colorLayout)
   overlayDef.render(document.body)
-}
-
-function getButton(className, clickHandler, iconName) {
-  let button = buildElement('button', className, clickHandler)
-  let icon = buildElement('i', 'material-icons md-light md-36')
-  icon.i.innerText = iconName
-  return new ElementDefinition(button, [icon])
 }
 
 function addServiceWorker() {

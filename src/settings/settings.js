@@ -1,5 +1,7 @@
-import { ElementDefinition, buildElement } from '../templater/ElementDefinition'
+import e from '../templater/ElementDefinition'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
+const { E, div, button } = e
+
 const DEFAULT_STARTING_COLOR = {
   r: 40,
   g: 40,
@@ -13,35 +15,29 @@ export const SETTING_EVENTS = {
 }
 
 let subscriptions = []
+// copy instead of reference to keep original static
 let customColor = Object.assign({}, DEFAULT_STARTING_COLOR)
 
-
 export function getBrushLayout() {
-  // let overlay = buildElement('div', 'brush-container')
-  // return new ElementDefinition(overlay, [])
   return {}
 }
 
 export function getColorLayout() {
-  let r = buildElement('button', 'btn red-btn', colorClicked('rgb(163, 64, 64)'))
-  let g = buildElement('button', 'btn green-btn', colorClicked('rgb(91, 184, 91)'))
-  let b = buildElement('button', 'btn blue-btn', colorClicked('rgb(69, 69, 163)'))
-
-  let custom = buildElement('button', 'btn custom-color-btn')
-  custom.handlers = {}
-  custom.handlers[CUSTOM_DRAG_EVENT] = handleColorDrag()
-
-  let colorLayout = buildElement('div', 'color-container')
-  let innerColorLayout = new ElementDefinition(buildElement('div', 'inner-color-container'), [r, g, b])
-
-  return new ElementDefinition(colorLayout, [custom, innerColorLayout])
+  return div({class:'color-container'},
+            button({class: 'btn custom-color-btn', customDragEvent: handleColorDrag()}),
+            div({class: 'inner-color-container'},
+              button({class: 'btn red-btn', click: colorChange('rgb(163, 64, 64)')}),
+              button({class: 'btn green-btn', click: colorChange('rgb(91, 184, 91)')}),
+              button({class: 'btn blue-btn', click: colorChange('rgb(69, 69, 163)')}),
+            )
+          )
 }
 
 export function subscribe(key, handler) {
   subscriptions[key] = handler
 }
 
-function colorClicked(color) {
+function colorChange(color) {
   return (ev) => {
     updateColor(color)
   }
@@ -52,7 +48,9 @@ function updateColor(color) {
     subscriptions[SETTING_EVENTS.COLOR](color)
   }
 }
+
 /**
+ * Handler for the 
  * 
  * @returns {{start: function(any), move: function(any), finish: function(any)}}
  */
@@ -87,8 +85,4 @@ function handleColorDrag() {
       elem.style.marginRight = ''  
     }
   }
-}
-
-function openOpacitySlider() {
-  console.log('open an opacity slider here.')
 }

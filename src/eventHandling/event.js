@@ -5,7 +5,7 @@ const TOUCH_EVENT_MAP = {
   mousemove: 'touchmove'
 }
 
-export const CUSTOM_DRAG_EVENT = 'custom-drag-event'
+export const CUSTOM_DRAG_EVENT = 'customDragEvent'
 
 /**
  * 

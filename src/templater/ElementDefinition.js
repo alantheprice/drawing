@@ -1,43 +1,26 @@
 import { renderElement } from './renderUtils.js'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT } from '../eventHandling/event'
+import { ELEMENTS, EVENTS } from './constants.js'
 
-const ELEM_DEF_PROPS = ['class', 'attributes', 'handlers', 'innerText']
+const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
+        obj[next] = 'handlers'
+        return obj
+    }, {})
 
-/**
- * Function to simplify building an ElementDefinition
- * 
- * @export
- * @param {string} tagName 
- * @param {string} className 
- * @param {function(event, HTMLElement)} [clickHandle] 
- * @returns {{tag: {attributes: Object, innerText: string}}}
- */
-export function buildElement(tagName, className, clickHandle) {
-    var elementDef = {}
-    elementDef[tagName] = {
-        attributes: {class: className}
-    }
-    if (clickHandle) {
-        elementDef[tagName].handlers = {
-            click: clickHandle
-        }
-    }
-    return elementDef
-}
-
-export class ElementDefinition {
+class ElementDefinition {
     /**
      * Creates an instance of ElementDefinition.
-     * @param {{tag: {attributes: Object, innerText: string}}} config
+     * @param {string} tagName
+     * @param {{attributes: Object, innerText: string, handlers: Object}} config
      * @param {ElementDefinition[]} [children] 
      * @memberof ElementDefinition
      */
-    constructor(config, children) {
-        this.tagName = Object.keys(config).filter((key) => ELEM_DEF_PROPS.indexOf(key) === -1)[0]
-        this.attr = config[this.tagName].attributes || config.attributes
-        this.handlers = config[this.tagName].handlers || config.handlers || null
-        this.innerText = config[this.tagName].innerText || config.innerText || ''
-        this.children = children
+    constructor(tagName, config, children) {
+        this.tagName = tagName
+        this.attr = config.attributes
+        this.handlers = config.handlers
+        this.innerText = config.innerText || ''
+        this.children = (!children || !children.length || !children[0]) ? null : children
     }
 
     /**
@@ -96,3 +79,46 @@ function addEventHandlers(elem, handlers) {
         })
     }
 }
+
+
+/**
+ * Returns a function closure for building different html elements.
+ * 
+ * @param {string} tagName 
+ * @returns 
+ */
+function getBuilder(tagName) {
+
+    /**
+     * Create an element definition for tagName and input attributes
+     * 
+     * @param {any} attributes 
+     * @param {ElementDefinition[]} [children] 
+     * @returns {ElementDefinition}
+     */
+    return function createElementDefinition(attributes, ...children) {
+        let config = Object.keys(attributes).reduce((obj, next) => {
+            if (next === 'innerText') {
+                obj.innerText = attributes[next]
+                return obj
+            }
+            let name = ATTRIBUTE_MAP[next] || 'attributes'
+            obj[name][next] = attributes[next]
+            return obj
+        }, {attributes: {}, handlers: {}})
+
+        return new ElementDefinition(tagName, config, children)
+    }
+}
+
+let exportable = {
+    ElementDefinition: ElementDefinition
+}
+
+exportable = ELEMENTS.reduce((agg, next) => {
+    agg[next] = getBuilder(next)
+    return agg
+}, exportable)
+
+
+export default exportable
