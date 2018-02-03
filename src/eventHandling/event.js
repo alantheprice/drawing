@@ -78,6 +78,12 @@ function getXY(ev) {
   return null
 }
 
+/**
+ * Get the x an y coords of a touch event.
+ * 
+ * @param {TouchEvent} ev 
+ * @returns {{x: number, y: number}}
+ */
 function getTouchXY(ev) {
   let touchX = ev.touches[0].clientX
   let touchY = ev.touches[0].clientY

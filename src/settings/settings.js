@@ -1,6 +1,6 @@
 import e from '../templater/ElementDefinition'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
-const { E, div, button } = e
+const { div, button } = e
 
 const DEFAULT_STARTING_COLOR = {
   r: 40,
@@ -26,9 +26,9 @@ export function getColorLayout() {
   return div({class:'color-container'},
             button({class: 'btn custom-color-btn', customDragEvent: handleColorDrag()}),
             div({class: 'inner-color-container'},
-              button({class: 'btn red-btn', click: colorChange('rgb(163, 64, 64)')}),
-              button({class: 'btn green-btn', click: colorChange('rgb(91, 184, 91)')}),
-              button({class: 'btn blue-btn', click: colorChange('rgb(69, 69, 163)')}),
+              ['red', 'blue', 'green'].map((color) => {
+                return button({class: `btn ${color}-btn`, click: colorChange(color) })
+              })
             )
           )
 }

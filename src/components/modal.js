@@ -11,17 +11,19 @@ export default function (element) {
     let modal = getModal(element)
     modal.render(document.body)
 }
+
 /**
+ * Create a modal with 
  * 
- * 
- * @param {any} element 
+ * @param {ElementDefinition} elementContent 
  * @returns 
  */
-function getModal(element) {
-    return E(div('c-modal'), 
-        E(div('c-modal__overlay'), 
-            E(div('c-modal__content'),
-                element)
+function createModal(elementContent) {
+    return div({clas:'c-modal'}, 
+        div({class: 'c-modal__overlay'}, 
+            div({class: 'c-modal__content'},
+                elementContent
+            )
         )
     )
 }

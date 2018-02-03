@@ -17,7 +17,7 @@ class ElementDefinition {
      */
     constructor(tagName, config, children) {
         this.tagName = tagName
-        this.attr = config.attributes
+        this.attr = config.attributes || {}
         this.handlers = config.handlers
         this.innerText = config.innerText || ''
         this.children = (!children || !children.length || !children[0]) ? null : children
@@ -37,7 +37,7 @@ class ElementDefinition {
         if (this.children) {
             scope.children = this.children.map((child) => {
                 if (!(child instanceof ElementDefinition)) {
-                    child = new ElementDefinition(child, child.children)
+                    child = Object.assign(ElementDefinition.prototype, child)
                 }
                 return child.render(scope.element)
             })
@@ -47,24 +47,40 @@ class ElementDefinition {
         return scope.element
     }
 
+    /**
+     * Add specified class to the element
+     * 
+     * @param {any} className 
+     * @memberof ElementDe*ideafinition
+     */
     addClass(className) {
         if (this.element) {
             this.element.classList.add(className)
-        } else {
-            this.attr = this.attr || {}
-            this.attr.class = this.attr.class || ''
-            this.attr.class = [this.attr.class, className].join(' ')
         }
+        this.attr = this.attr || {}
+        this.attr.class = this.attr.class || ''
+        this.attr.class = [this.attr.class, className].join(' ')
     }
 
+    /**
+     * Remove specified class from the element
+     * 
+     * @param {any} className 
+     * @memberof ElementDefinition
+     */
     removeClass(className) {
-        if (this.element) {
-            this.element.classList.remove(className)
-        } else if (this.attr && this.attr.class.indexOf(className) > -1){
-            this.attr.class = this.attr.class.split(' ').filter((cn) => cn !== className).join(' ')
+        if (!this.attr || this.attr.class.indexOf(className) === -1){
+            return
         }
+        this.attr.class = this.attr.class.split(' ').filter((cn) => cn !== className).join(' ')
+        if (this.element) {
+            this.element.className = this.attr.class
+        } 
+       
     }
 }
+
+
 
 function addEventHandlers(elem, handlers) {
     if (handlers) {
@@ -106,8 +122,13 @@ function getBuilder(tagName) {
             obj[name][next] = attributes[next]
             return obj
         }, {attributes: {}, handlers: {}})
-
-        return new ElementDefinition(tagName, config, children)
+        let childs = children || []
+        // if the first element is an array, it was passed in as an array instead of arguments
+        if (Array.isArray(childs[0])) {
+            debugger
+            childs = childs[0]
+        }
+        return new ElementDefinition(tagName, config, childs)
     }
 }
 
