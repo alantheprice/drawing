@@ -6,10 +6,12 @@ const div = e.div
  * 
  * @export
  * @param {ElementDefinition} element 
+ * @returns {ElementDefintion}
  */
 export default function (element) {
-    let modal = getModal(element)
+    let modal = createModal(element)
     modal.render(document.body)
+    return modal
 }
 
 /**
@@ -19,7 +21,7 @@ export default function (element) {
  * @returns 
  */
 function createModal(elementContent) {
-    return div({clas:'c-modal'}, 
+    return div({class:'c-modal'}, 
         div({class: 'c-modal__overlay'}, 
             div({class: 'c-modal__content'},
                 elementContent

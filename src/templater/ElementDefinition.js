@@ -1,5 +1,5 @@
 import { renderElement } from './renderUtils.js'
-import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT } from '../eventHandling/event'
+import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT, TOUCH_EVENT_MAP } from '../eventHandling/event'
 import { ELEMENTS, EVENTS } from './constants.js'
 
 const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
@@ -76,7 +76,12 @@ class ElementDefinition {
         if (this.element) {
             this.element.className = this.attr.class
         } 
-       
+    }
+
+    remove() {
+        if (this.element) {
+            this.element.parentNode.removeChild(this.element)
+        }
     }
 }
 
@@ -84,13 +89,16 @@ class ElementDefinition {
 
 function addEventHandlers(elem, handlers) {
     if (handlers) {
+        debugger
         Object.keys(handlers).map((domEventName) => {
             return {name: domEventName, handler: handlers[domEventName]}
         }).forEach((ev) => {
             if (ev.name === CUSTOM_DRAG_EVENT) {
                 addDragHandler(elem, ev.handler)
-            } else {
+            } else if (Object.keys(TOUCH_EVENT_MAP).indexOf(ev.name) > -1) {
                 addEvent(elem, ev.name, ev.handler)
+            } else {
+                document.addEventListener(ev.name, ev.handler)
             }
         })
     }
@@ -125,7 +133,6 @@ function getBuilder(tagName) {
         let childs = children || []
         // if the first element is an array, it was passed in as an array instead of arguments
         if (Array.isArray(childs[0])) {
-            debugger
             childs = childs[0]
         }
         return new ElementDefinition(tagName, config, childs)

@@ -1,5 +1,6 @@
 import e from '../templater/ElementDefinition'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
+import colorPicker from '../components/colorPicker'
 const { div, button } = e
 
 const DEFAULT_STARTING_COLOR = {
@@ -24,7 +25,7 @@ export function getBrushLayout() {
 
 export function getColorLayout() {
   return div({class:'color-container'},
-            button({class: 'btn custom-color-btn', customDragEvent: handleColorDrag()}),
+            button({class: 'btn custom-color-btn', click: openColorPicker}), //customDragEvent: handleColorDrag()}),
             div({class: 'inner-color-container'},
               ['red', 'blue', 'green'].map((color) => {
                 return button({class: `btn ${color}-btn`, click: colorChange(color) })
@@ -47,6 +48,12 @@ function updateColor(color) {
   if (subscriptions[SETTING_EVENTS.COLOR]) {
     subscriptions[SETTING_EVENTS.COLOR](color)
   }
+}
+
+function openColorPicker() {
+  colorPicker(customColor, (newColor) => {
+    
+  })
 }
 
 /**

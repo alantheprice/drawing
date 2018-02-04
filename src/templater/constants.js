@@ -121,5 +121,7 @@ export const EVENTS = [
     'touchstart', 
     'touchend', 
     'touchmove', 
-    'touchcancel'
+    'touchcancel',
+    'input',
+    'change'
 ]

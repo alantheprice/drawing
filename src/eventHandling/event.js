@@ -1,4 +1,4 @@
-const TOUCH_EVENT_MAP = {
+export const TOUCH_EVENT_MAP = {
   click: 'touchstart',
   mousedown: 'touchstart',
   mouseup: 'touchend',
@@ -49,7 +49,7 @@ export function addEvent(element, eventName, handler) {
   let handle = (ev) => {
     ev.preventDefault()
     let xy = getXY(ev)
-    if (!xy) { return }
+    // if (!xy) { return }
     handler(xy, ev, element)
   }
   element.addEventListener(eventName, handle)
