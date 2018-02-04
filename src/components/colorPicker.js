@@ -26,8 +26,10 @@ export default function getColorPicker(currentColor, onColorChanged) {
     let displayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColorToDisplay()}`})
     function valueChanged(id) {
         return (ev) => {
+            ev.preventDefault()
+            let mapped = ID_MAP[ev.target.id]
             console.log(ev, id)
-            selectedColor[id] = ev.target.value
+            selectedColor[mapped] = ev.target.value
             // don't mutate
             onColorChanged(Object.assign({}, selectedColor))
             displayColor.element.style.backgroundColor = selectedColorToDisplay()
@@ -46,9 +48,17 @@ export default function getColorPicker(currentColor, onColorChanged) {
                         let key = ID_MAP[propName]
                         let max = (propName === 'opacity') ? 1 : 256
                         let step = (propName === 'opacity') ? .01 : 1
+                        // this really should be it's own component.
                         return div({class: 'c-color-picker__option'},
                             label({class: 'c-color-picker__range-label', innerText: propName}),
-                            input({class: 'c-color-picker__range', type: 'range', min: 0, max: max, step: step, id: propName, value: selectedColor[key], change: valueChanged(key)})
+                            input({class: 'c-color-picker__range', 
+                            type: 'range', 
+                            min: 0, 
+                            max: max, 
+                            step: step, 
+                            id: propName, 
+                            value: selectedColor[key], 
+                            input: valueChanged(key)})
                         )
                     })
                 ),

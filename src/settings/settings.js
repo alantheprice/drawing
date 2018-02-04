@@ -1,7 +1,7 @@
 import e from '../templater/ElementDefinition'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
 import colorPicker from '../components/colorPicker'
-const { div, button } = e
+const { div, button, i } = e
 
 const DEFAULT_STARTING_COLOR = {
   r: 40,
@@ -18,20 +18,19 @@ export const SETTING_EVENTS = {
 let subscriptions = []
 // copy instead of reference to keep original static
 let customColor = Object.assign({}, DEFAULT_STARTING_COLOR)
+let colorBtn = null
 
 export function getBrushLayout() {
   return {}
 }
 
 export function getColorLayout() {
+  colorBtn = button({class: 'btn custom-color-btn', click: openColorPicker, style: 'background-color: rgb(40,40,40)'},
+    i({class: 'material-icons md-light md-36', innerText: 'brush'})
+  )
   return div({class:'color-container'},
-            button({class: 'btn custom-color-btn', click: openColorPicker}), //customDragEvent: handleColorDrag()}),
-            div({class: 'inner-color-container'},
-              ['red', 'blue', 'green'].map((color) => {
-                return button({class: `btn ${color}-btn`, click: colorChange(color) })
-              })
-            )
-          )
+          colorBtn
+        )
 }
 
 export function subscribe(key, handler) {
@@ -45,6 +44,8 @@ function colorChange(color) {
 }
 
 function updateColor(color) {
+  // TODO: find a better pattern, maybe use getters/setters
+  colorBtn.element.style.backgroundColor = color
   if (subscriptions[SETTING_EVENTS.COLOR]) {
     subscriptions[SETTING_EVENTS.COLOR](color)
   }
