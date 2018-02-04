@@ -89,7 +89,6 @@ class ElementDefinition {
 
 function addEventHandlers(elem, handlers) {
     if (handlers) {
-        debugger
         Object.keys(handlers).map((domEventName) => {
             return {name: domEventName, handler: handlers[domEventName]}
         }).forEach((ev) => {

@@ -52,7 +52,9 @@ function updateColor(color) {
 
 function openColorPicker() {
   colorPicker(customColor, (newColor) => {
-    
+    customColor = newColor
+    console.log(newColor)
+    updateColor(`rgba(${newColor.r}, ${newColor.g}, ${newColor.b}, ${newColor.a})`)
   })
 }
 
