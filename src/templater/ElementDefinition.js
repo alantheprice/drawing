@@ -2,6 +2,8 @@ import { renderElement } from './renderUtils.js'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT, TOUCH_EVENT_MAP } from '../eventHandling/event'
 import { ELEMENTS, EVENTS } from './constants.js'
 
+const DIRECT_SET_ATTRIBUTES = ['innerText', 'className', 'value']
+
 const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
         obj[next] = 'handlers'
         return obj
@@ -17,14 +19,16 @@ class ElementDefinition {
      */
     constructor(tagName, config, children) {
         this.tagName = tagName
-        this.attr = config.attributes || {}
+        this.attr = Object.assign({class: ''}, config.attributes)
         this.handlers = config.handlers
         this.innerText = config.innerText || ''
+        define(this, 'innerText', this.innerText)
+        Object.keys(this.attr).forEach((key) => define(this, key, this.attr[key]))
+
         this.children = (!children || !children.length || !children[0]) ? null : children
     }
 
     /**
-     * 
      * @param {HTMLElement} [parentElement] 
      * @returns {HTMLElement}
      * @memberof ElementDefinition
@@ -42,7 +46,7 @@ class ElementDefinition {
                 return child.render(scope.element)
             })
         }
-        addEventHandlers(scope.element, this.handlers)
+        addEventHandlers(scope.element, this.handlers, this)
         this.element = scope.element
         return scope.element
     }
@@ -50,32 +54,32 @@ class ElementDefinition {
     /**
      * Add specified class to the element
      * 
-     * @param {any} className 
-     * @memberof ElementDe*ideafinition
+     * @param {string} className 
+     * @memberof ElementDefinition
      */
     addClass(className) {
-        if (this.element) {
-            this.element.classList.add(className)
+        if ((this.className || '').split(' ').indexOf(className) > -1) {
+            return
         }
-        this.attr = this.attr || {}
-        this.attr.class = this.attr.class || ''
-        this.attr.class = [this.attr.class, className].join(' ')
+        this.className = [this.className, className].join(' ')
     }
 
     /**
      * Remove specified class from the element
      * 
-     * @param {any} className 
-     * @memberof ElementDefinition
+     * @param {string} className 
+     * @memberof ElementDefinitions
      */
     removeClass(className) {
-        if (!this.attr || this.attr.class.indexOf(className) === -1){
+        if (!this.className || this.className.indexOf(className) === -1){
             return
         }
-        this.attr.class = this.attr.class.split(' ').filter((cn) => cn !== className).join(' ')
-        if (this.element) {
-            this.element.className = this.attr.class
-        } 
+        this.className = this.className.split(' ').filter((cn) => cn !== className).join(' ')
+    }
+
+    setActive(active) {
+        let classFunc = (active) ? 'addClass' : 'removeClass'
+        this[classFunc]('active')
     }
 
     remove() {
@@ -84,23 +88,47 @@ class ElementDefinition {
         }
     }
 }
-
-
-
-function addEventHandlers(elem, handlers) {
-    if (handlers) {
-        Object.keys(handlers).map((domEventName) => {
-            return {name: domEventName, handler: handlers[domEventName]}
-        }).forEach((ev) => {
-            if (ev.name === CUSTOM_DRAG_EVENT) {
-                addDragHandler(elem, ev.handler)
-            } else if (Object.keys(TOUCH_EVENT_MAP).indexOf(ev.name) > -1) {
-                addEvent(elem, ev.name, ev.handler)
-            } else {
-                document.addEventListener(ev.name, ev.handler)
-            }
-        })
+/**
+ * Define property, used to set 
+ * 
+ * @param {any} obj 
+ * @param {any} key s
+ */
+function define(obj, key, value) {
+    let mKey = (key === 'class') ? 'className' : key
+    let innerName = `_${mKey}`
+    var settings = {
+      set: (val) => {
+          if (obj[innerName] === val) { return }
+          if (obj.element && DIRECT_SET_ATTRIBUTES.indexOf(mKey) > -1) {
+            obj.element[mKey] = val + ''
+          } else if (obj.element && obj.attr[key]) {
+            obj.element.setAttribute(key, val)
+          }
+          obj[innerName] = val
+      },
+      get: () => obj[innerName]
     }
+    Object.defineProperty(obj, mKey, settings)
+    obj[mKey] = value
+}
+
+
+function addEventHandlers(elem, handlers, scope) {
+    if (!handlers) { return }
+    Object.keys(handlers).map((domEventName) => {
+        return {name: domEventName, handler: handlers[domEventName]}
+    }).forEach((ev) => {
+        if (ev.name === CUSTOM_DRAG_EVENT) {
+            addDragHandler(elem, ev.handler)
+        } else if (Object.keys(TOUCH_EVENT_MAP).indexOf(ev.name) > -1) {
+            addEvent(elem, ev.name, ev.handler)
+        } else {
+            document.addEventListener(ev.name, (e) => {
+                ev.handler(e, scope)
+            })
+        }
+    })
 }
 
 
@@ -114,7 +142,6 @@ function getBuilder(tagName) {
 
     /**
      * Create an element definition for tagName and input attributes
-     * 
      * @param {any} attributes 
      * @param {ElementDefinition[]} [children] 
      * @returns {ElementDefinition}
@@ -146,7 +173,5 @@ exportable = ELEMENTS.reduce((agg, next) => {
     agg[next] = getBuilder(next)
     return agg
 }, exportable)
-
-
 
 export default exportable

@@ -25,7 +25,7 @@ export function getBrushLayout() {
 }
 
 export function getColorLayout() {
-  colorBtn = button({class: 'btn custom-color-btn', click: openColorPicker, style: 'background-color: rgb(40,40,40)'},
+  colorBtn = button({class: 'btn circle custom-color-btn', click: openColorPicker, style: 'background-color: rgb(40,40,40)'},
     i({class: 'material-icons md-light md-36', innerText: 'brush'})
   )
   return div({class:'color-container'},

@@ -1,5 +1,5 @@
 import e from '../templater/ElementDefinition'
-const div = e.div
+const { div, button } = e
 
 /**
  * 
@@ -21,11 +21,17 @@ export default function (element) {
  * @returns 
  */
 function createModal(elementContent) {
-    return div({class:'c-modal'}, 
+    let modal = div({class:'c-modal'}, 
         div({class: 'c-modal__overlay'}, 
-            div({class: 'c-modal__content'},
-                elementContent
+            div({class: 'c-modal__inner-container'},
+                div({class: 'c-modal__content'},
+                    elementContent
+                ),
+                div({class: 'c-modal__btn-container'},
+                    button({class: 'btn c-modal__btn-close', innerText: 'OK', click: () => modal.remove()})
+                ) 
             )
         )
     )
+    return modal
 }
