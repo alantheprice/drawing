@@ -9,6 +9,11 @@ body {
   font-family: 'Helvetica';
 }
 
+button {
+  outline: none;
+  color: rgb(70,70,70);
+}
+
 /* Rules for sizing the icon. */
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
@@ -38,8 +43,8 @@ body {
   pointer-events: all;
   font-size: 20px;
   padding: 7px 20px;
-  border: solid 1px rgba(50,50,50, .3);
-  box-shadow: 3px 3px 10px 5px rgba(164, 164, 165, 0.4);
+  border: solid 1px rgba(120,120,120, .3);
+  box-shadow: 3px 3px 10px 3px rgba(164, 164, 165, 0.3);
   outline: none;
 }
 .btn.circle {
@@ -172,44 +177,129 @@ body {
   flex-direction: column;
   margin: auto;
   background-color: #FFF;
+  width: 400px;
+  height: 500px;
+  max-width: 90%;
+  max-height: 90%;
 }
 .c-modal__content {
-  display: flex;
-  padding: 5px;
-  border-radius: 5px;
+  width: 100%;
+  height: calc(100% - 60px);
 }
 .c-modal__btn-container {
   display: flex;
   width: 100%;
 }
 .c-modal__btn-close {
-  margin: 20px auto;
+  box-shadow: none;
+  width: 100%;
+  border-radius: 0;
+  height: 60px;
+/*   background-color: rgba(40,90,190, .5) */
 }
 
+/** Tabs **/
+
+.c-tab-layout {
+
+}
+
+.c-tab-layout__container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction:  column;
+}
+
+
+.c-tab-layout__button-container {
+  display: flex;
+  width: 100%;
+}
+
+.c-tab-layout__tab {
+  display: none;
+}
+
+.c-tab-layout__tab.active {
+  display: block;
+}
+
+.c-tab-layout__button {
+  display: flex;
+  flex-grow: 1;
+  line-height: 20px;
+  font-size: 16px;
+  border: none;
+  padding: 15px;
+  background-color: rgba(90,90,90, .2);
+  text-transform: uppercase;
+  text-align: center;
+
+}
+
+.c-tab-layout__button
+{
+  border-right: solid 1px rgba(70,70,100, .5);
+}
+.c-tab-layout__button:last-child
+{
+  border-right: none;
+}
+
+.c-tab-layout__button.active {
+/*   border-top: solid 5px rgb(95, 151, 224); */
+  background-color: #FFF;
+}
 /** color picker **/
+
+.c-color-picker__tabs {
+  min-width: 250px;
+  min-height: 350px;
+}
 
 .c-color-picker {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin: 10px auto;
 }
 
 .c-color-picker__display {
-  width: 150px;
-  height: 150px;
+  width: 130px;
+  height: 90px;
   border-radius: 30px;
+  box-shadow: 3px 3px 10px 3px rgba(164, 164, 165, 0.3);
+  border: solid 1px rgba(120,120,120, .3);
   margin: 10px auto;
 }
 
 .c-color-picker__sliders {
   display: flex;
   flex-direction: column;
+  margin: 5px auto;
 }
 
 .c-color-picker__range-label {
   display: block;
 }
 
-.c-color-picker__range-label {
+.c-color-picker__range {
   display: block;
+  height: 20px;
+  width: 200px;
 }
 
+/** Swatches **/
+
+.c-color-swatches__container {
+  margin: 20px auto;
+}
+
+.c-color-swatches {
+  overflow: auto;
+  padding: 5px 20px;
+}
+
+.c-color-swatches .btn {
+  margin: 5px;
+}

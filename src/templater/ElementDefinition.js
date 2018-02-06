@@ -51,6 +51,10 @@ class ElementDefinition {
         return scope.element
     }
 
+    getChildByClass(className) {
+        throw new Error('get Child by Class has yet to be implemented')
+    }
+
     /**
      * Add specified class to the element
      * 

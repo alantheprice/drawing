@@ -16,25 +16,26 @@ export default function (tabs) {
  * Create a tabLayout
  * 
  * @param {{title: string, active: boolean, layout: ElementDefinition}[]} tabs
- * @returns 
+ * @returns {ElementDefinition}
  */
 function createTabs(tabs) {
     let tabLayouts = tabs.map(getTabLayout)
-
-    let tabButtons = div({class: 'c-tab-layout__buttons'}, 
-        tabs.map((t, idx) => getButton(t, idx, setTab))
-    )
+    let tabButtons = tabs.map((t, idx) => getButton(t, idx, setTab))
 
     function setTab(index) {
         return (ev) => {
-            tabButtons.forEach((btn, idx) => btn.setActive(idx === index))
             tabLayouts.forEach((tab, idx) => tab.setActive(idx === index))
+            tabButtons.forEach((btn, idx) => btn.setActive(idx === index))
         }
     }
 
     return div({class:'c-tab-layout'},
-        tabLayouts,
-        tabButtons
+        div({class: 'c-tab-layout__button-container'}, 
+            tabButtons
+        ),
+        div({class: 'c-tab-layout__container'},
+            tabLayouts
+        )
     )
 }
 
@@ -51,13 +52,14 @@ function getTabLayout(tab) {
 /**
  * 
  * 
- * @param {any} tab 
- * @param {any} index 
+ * @param {{title: string, active: boolean, layout: ElementDefinition}} tab 
+ * @param {number} index 
  * @param {function(number)} setTab 
  */
 function getButton(tab, index, setTab) {
-    let btn = button({
+    return button({
         class: `c-tab-layout__button${(tab.active)? ' active' : ''}`,
+        innerText: tab.title,
         click: setTab(index)
     })
 }
