@@ -1,5 +1,6 @@
 import { init, clear, undo, updateSettings } from './drawing/drawing'
-import e from './templater/ElementDefinition'
+import { e, ElementDefinition } from './templater/ElementDefinition'
+import { colorButton } from './components/colorButton'
 import { getBrushLayout, getColorLayout, subscribe, SETTING_EVENTS} from './settings/settings'
 let settingsShowing = false
 const {div, button, i } = e
@@ -11,35 +12,28 @@ function setup() {
   init()
   createOverlay()
   addServiceWorker()
-  subscribe(SETTING_EVENTS.COLOR, (newColor) => {
-    updateSettings({color: newColor})
-  })
 }
 
-function showSettings(layouts) {
-  settingsShowing = !settingsShowing
-  layouts.forEach((layout) => layout.setActive(settingsShowing))
-  console.log('settings-clicked')
-}
+// function showSettings(layouts) {
+//   settingsShowing = !settingsShowing
+//   layouts.forEach((layout) => layout.setActive(settingsShowing))
+//   console.log('settings-clicked')
+// }
 
 // Overlay should be it's own component, and settings should be only for settings, not for color pickers.
 function createOverlay() {
-  // settings elements
-  let colorLayout = getColorLayout()
-
-  let overlayDef = div({class:'overlay-container'},
+  div({class:'overlay-container'},
     button({class:'btn circle undo-btn', click: undo},
       i({class:'material-icons md-light md-36', innerText: 'undo'})
     ),
-    button({class:'btn circle setting-btn', click: () => showSettings([colorLayout])},
-      i({class:'material-icons md-light md-36', innerText: 'settings'})
-    ),
+    colorButton({'@colorSelected': (color) => updateSettings({color: color})}),
+    // button({class:'btn circle setting-btn', click: () => showSettings([colorLayout])},
+    //   i({class:'material-icons md-light md-36', innerText: 'settings'})
+    // ),
     button({class: 'btn circle clear-btn', click: clear},
       i({class: 'material-icons md-light md-36', innerText: 'delete_forever'})
-    ),
-    colorLayout
-  )
-  overlayDef.render(document.body)
+    )
+  ).render(document.body)
 }
 
 function addServiceWorker() {

@@ -1,4 +1,4 @@
-import e from '../templater/ElementDefinition'
+import { e, ElementDefinition } from '../templater/ElementDefinition'
 const { div, button } = e
 
 /**
@@ -6,7 +6,7 @@ const { div, button } = e
  * 
  * @export
  * @param {ElementDefinition} element 
- * @returns {ElementDefintion}
+ * @returns {ElementDefinition}
  */
 export default function (element) {
     let modal = createModal(element)

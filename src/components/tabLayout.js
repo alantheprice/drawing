@@ -1,12 +1,13 @@
-import e from '../templater/ElementDefinition'
+import { e, ElementDefinition } from '../templater/ElementDefinition'
 const { div, button } = e
 
+// DEPRECATED, USE NEW TABS PATTERN ONCE COMPLETE.
 /**
  * 
  * 
  * @export
  * @param {{title: string, active: boolean, layout: ElementDefinition}[]} tabs
- * @returns {ElementDefintion}
+ * @returns {ElementDefinition}
  */
 export default function (tabs) {
     return createTabs(tabs)

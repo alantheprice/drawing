@@ -1,6 +1,9 @@
-import e from '../templater/ElementDefinition'
+import { e, ElementDefinition } from '../templater/ElementDefinition'
 import modal from './modal'
 import tabLayout from './tabLayout'
+import {tab, tabs} from './tabs'
+import swatches from '../color/swatches'
+import { Color } from '../color/Color'
 
 const { div, input, button, p, label } = e
 const ID_MAP = {
@@ -9,46 +12,40 @@ const ID_MAP = {
     'blue': 'b',
     'opacity': 'a'
 }
-let selectedColor = { r: 25, g: 40, b: 120, a: 1 }
+let selectedColor = new Color(25, 40, 120)
 
 /**
  * @export
- * @param {{r: number, g: number, b: number, a: number}} currentColor 
- * @param {function({r: number, g: number, b: number, a: number})} onColorChanged 
- * @returns 
+ * @param {{'@colorSelected': function(Color), ':currentColor': Color}} config
+ * @returns {ElementDefinition}
  */
-export default function getColorPicker(currentColor, onColorChanged) {
-    selectedColor = Object.assign({}, currentColor)
-    let displayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColorToDisplay()}`})
-    let swatchDisplayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColorToDisplay()}`})
+export default function getColorPicker(config) {
+    selectedColor.update(config[':currentColor'])
+
+    let displayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColor.getAsCssValue()}`})
+    let swatchDisplayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColor.getAsCssValue()}`})
     let sliders = Object.keys(ID_MAP).map(getColorSliders)
 
     let cpModal = modal(
         div({class: 'c-color-picker__tabs'},
-            tabLayout([
-                {
-                    title: 'color swatches',
-                    active: true,
-                    layout: div({class: 'c-color-swatches__container'},
+            tabs({},
+                tab({':title': 'swatches', ':active': true },
+                    div({class: 'c-color-swatches__container'},
                         swatchDisplayColor,
                         div({class: 'c-color-swatches'},
-                            colorSwatch({r: 250, g: 80, b: 80, a: 1}),
-                            colorSwatch({r: 80, g: 250, b: 80, a: 1}),
-                            colorSwatch({r: 80, g: 80, b: 250, a: 1})
+                            swatches.map(colorSwatch)
                         )
                     )
-                },
-                {
-                    title: 'custom color',
-                    active: false,
-                    layout: div({class: 'c-color-picker'},
+                ),
+                tab({':title': 'custom', ':active': false},
+                    div({class: 'c-color-picker'},
                         displayColor,
                         div({class: 'c-color-picker__sliders'},
                             sliders
                         )
                     )
-                }
-            ])
+                )
+            )
         )
     )
 
@@ -63,7 +60,7 @@ export default function getColorPicker(currentColor, onColorChanged) {
 
     function setColor(color) {
         return (ev) => {
-            selectedColor = Object.assign(selectedColor, color)
+            selectedColor.update(color)
             sliders.forEach((item) => {
                 item.children[1].value = selectedColor[item.children[1].id]
                 console.log(item)
@@ -73,14 +70,9 @@ export default function getColorPicker(currentColor, onColorChanged) {
     }
 
     function showChange() {
-        // don't mutate
-        onColorChanged(Object.assign({}, selectedColor))
-        displayColor.element.style.backgroundColor = selectedColorToDisplay()
-        swatchDisplayColor.element.style.backgroundColor = selectedColorToDisplay()
-    }
-
-    function selectedColorToDisplay() {
-        return `rgba(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b}, ${selectedColor.a})`
+        config['@colorSelected'](selectedColor.copy())
+        displayColor.style = `background-color: ${selectedColor.getAsCssValue()}`
+        swatchDisplayColor.style = `background-color: ${selectedColor.getAsCssValue()}`
     }
 
     function getColorSliders(propName) {
@@ -96,15 +88,15 @@ export default function getColorPicker(currentColor, onColorChanged) {
 
     /**
      * 
+     * @param {{r:number, g: number, b: number, a: number}} color 
      * @returns {ElementDefinition}
      */
     function colorSwatch(color) {
-        color.a = color.a || 1
-        let bgColor = `background-color: rgba(${color.r}, ${color.g}, ${color.b}, ${color.a});`
+        let c = new Color(color.r, color.g, color.b, 1)
         return button({
             class: 'btn circle', 
-            click: setColor(color),
-            style: bgColor
+            click: setColor(c),
+            style: `background-color: ${c.getAsCssValue()};`
         })
     }
 }

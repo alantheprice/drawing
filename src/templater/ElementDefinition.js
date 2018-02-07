@@ -1,7 +1,6 @@
 import { renderElement } from './renderUtils.js'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT, TOUCH_EVENT_MAP } from '../eventHandling/event'
 import { ELEMENTS, EVENTS } from './constants.js'
-
 const DIRECT_SET_ATTRIBUTES = ['innerText', 'className', 'value']
 
 const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
@@ -9,7 +8,7 @@ const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
         return obj
     }, {})
 
-class ElementDefinition {
+export class ElementDefinition {
     /**
      * Creates an instance of ElementDefinition.
      * @param {string} tagName
@@ -19,40 +18,67 @@ class ElementDefinition {
      */
     constructor(tagName, config, children) {
         this.tagName = tagName
-        this.attr = Object.assign({class: ''}, config.attributes)
+        let parsedOut = Object.keys(config.attributes).reduce(parse, 
+            {attrs: {class: ''}, subscriptions: {}, passThrough: {}, o: config.attributes})
+        this.passThrough = parsedOut.passThrough
+        this.subscriptions = parsedOut.subscriptions
+        this.attrs = parsedOut.attrs
         this.handlers = config.handlers
         this.innerText = config.innerText || ''
         define(this, 'innerText', this.innerText)
-        Object.keys(this.attr).forEach((key) => define(this, key, this.attr[key]))
-
+        Object.keys(this.attrs).forEach((key) => define(this, key, this.attrs[key]))
+        Object.keys(this.passThrough).forEach((key) => {
+            define(this, key, this.passThrough[key], 
+                (val) => setPassThrough(this, key, val))
+        })
         this.children = (!children || !children.length || !children[0]) ? null : children
     }
 
     /**
-     * @param {HTMLElement} [parentElement] 
+     * Renders the element and children to the DOM
+     * 
+     * @param {HTMLElement} parentElement
+     * @param {ElementDefinition} [parentScope] 
      * @returns {HTMLElement}
      * @memberof ElementDefinition
      */
-    render(parentElement) {
+    render(parentElement, elementDef) {
         if (!this.tagName) {
             throw new Error('tagName must be defined')
         }
-        let scope = {element: renderElement(this.tagName, this.attr, this.innerText, parentElement)}  
+        let scope = {element: renderElement(this.tagName, this.attrs, this.innerText, parentElement)}  
         if (this.children) {
             scope.children = this.children.map((child) => {
                 if (!(child instanceof ElementDefinition)) {
-                    child = Object.assign(ElementDefinition.prototype, child)
+                    throw new Error("children must be of type ElementDefinition")
                 }
-                return child.render(scope.element)
+                return child.render(scope.element, this)
             })
         }
         addEventHandlers(scope.element, this.handlers, this)
         this.element = scope.element
+        if (elementDef) {
+            this.parent = elementDef
+        }
         return scope.element
     }
 
-    getChildByClass(className) {
-        throw new Error('get Child by Class has yet to be implemented')
+    /**
+     * 
+     * 
+     * @param {string} messageName 
+     * @param {any} [messageContent]
+     * @memberof ElementDefinition
+     */
+    emit(messageName, messageContent) {
+        debugger
+        if (typeof this.subscriptions[messageName] === 'function') {
+            this.subscriptions[messageName](messageContent)
+        }
+    }
+
+    querySelector(selector) {
+        throw new Error('querySelector has yet to be implemented')
     }
 
     /**
@@ -72,7 +98,7 @@ class ElementDefinition {
      * Remove specified class from the element
      * 
      * @param {string} className 
-     * @memberof ElementDefinitions
+     * @memberof ElementDefinition
      */
     removeClass(className) {
         if (!this.className || this.className.indexOf(className) === -1){
@@ -90,15 +116,41 @@ class ElementDefinition {
         if (this.element) {
             this.element.parentNode.removeChild(this.element)
         }
+        this.parent = null
     }
+}
+
+function parse(agg, key) {
+    if (key.indexOf(':') === 0) {
+        agg.passThrough[key.replace(':', '')] = agg.o[key]
+    } else if (key.indexOf('@') === 0) {
+        agg.subscriptions[key.replace('@', '')] = agg.o[key]
+    } else {
+        agg.attrs[key] = agg.o[key]
+    }
+    return agg
+}
+
+function setPassThrough(obj, key, value) {
+    let innerName = `_${key}`
+    if (obj[innerName] === value) { return }
+    obj[innerName] = value
+    if (!obj.children) { return }
+    obj.children.forEach((child) => {
+        if (child.passThrough[key]) {
+            child.passThrough[key] = value  
+        }
+    })
 }
 /**
  * Define property, used to set 
  * 
  * @param {any} obj 
- * @param {any} key s
+ * @param {string} key
+ * @param {any} value -- initial value
+ * @param {function(any)} [setter]
  */
-function define(obj, key, value) {
+function define(obj, key, value, setter) {
     let mKey = (key === 'class') ? 'className' : key
     let innerName = `_${mKey}`
     var settings = {
@@ -106,12 +158,15 @@ function define(obj, key, value) {
           if (obj[innerName] === val) { return }
           if (obj.element && DIRECT_SET_ATTRIBUTES.indexOf(mKey) > -1) {
             obj.element[mKey] = val + ''
-          } else if (obj.element && obj.attr[key]) {
+          } else if (obj.element && obj.attrs[key]) {
             obj.element.setAttribute(key, val)
           }
           obj[innerName] = val
       },
       get: () => obj[innerName]
+    }
+    if (setter) {
+        settings.set = setter
     }
     Object.defineProperty(obj, mKey, settings)
     obj[mKey] = value
@@ -178,4 +233,4 @@ exportable = ELEMENTS.reduce((agg, next) => {
     return agg
 }, exportable)
 
-export default exportable
+export const e = exportable

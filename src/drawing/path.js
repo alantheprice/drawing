@@ -1,5 +1,7 @@
 import { LocalStore } from '../storage/localStorage'
+import { Color } from '../color/Color'
 const store = new LocalStore()
+
 
 export class Path {
 
@@ -12,7 +14,7 @@ export class Path {
     // setting defaults
     this.settings = {
       lineWidth: 5,
-      color: 'rgba(20,45,200,.5)'
+      color: new Color(20, 45, 200, .5)
     }
     this.restorePath()
   }
@@ -58,24 +60,35 @@ export class Path {
       }
     }
   }
-
+  /**
+   * 
+   * 
+   * @param {any} points 
+   * @param {{lineWidth: number, color: Color}} settings 
+   * @memberof Path
+   */
   drawLine(points, settings) {
     if (!points || !points.length) {
       return
     }
     points = points.filter(f => !!f)
-    // this.ctx.save()
     this.ctx.beginPath()
     this.ctx.moveTo(points[0].x, points[0].y)
     points.forEach((points) => {
       this.ctx.lineTo(points.x, points.y)
     })
     this.ctx.lineWidth = settings.lineWidth
-    this.ctx.strokeStyle = settings.color
+    this.ctx.strokeStyle = settings.color.getAsCssValue()
     this.ctx.stroke()
-    // this.ctx.restore()
   }
 
+  /**
+   * 
+   * 
+   * @param {any} path 
+   * @param {{lineWidth: number, color: Color}} settings 
+   * @memberof Path
+   */
   savePath(path, settings) {
     this.paths.push({path: path, settings: Object.assign({}, settings)})
     // this.clear()

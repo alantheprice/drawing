@@ -1,4 +1,4 @@
-import e from '../templater/ElementDefinition'
+import { e, ElementDefinition } from '../templater/ElementDefinition'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
 import colorPicker from '../components/colorPicker'
 const { div, button, i } = e
