@@ -1,5 +1,5 @@
 export const TOUCH_EVENT_MAP = {
-  click: 'touchstart',
+  click: 'click',
   mousedown: 'touchstart',
   mouseup: 'touchend',
   mousemove: 'touchmove'
