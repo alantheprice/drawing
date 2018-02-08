@@ -1,39 +1,13 @@
-import { init, clear, undo, updateSettings } from './drawing/drawing'
 import { e, ElementDefinition } from './templater/ElementDefinition'
-import { colorButton } from './components/colorButton'
-import { getBrushLayout, getColorLayout, subscribe, SETTING_EVENTS} from './settings/settings'
-let settingsShowing = false
+import { controlOverlay } from './components/controlLayer'
 const {div, button, i } = e
 
 // initialize drawing
 setup()
 
 function setup() {
-  init()
-  createOverlay()
+  controlOverlay().render(document.body)
   addServiceWorker()
-}
-
-// function showSettings(layouts) {
-//   settingsShowing = !settingsShowing
-//   layouts.forEach((layout) => layout.setActive(settingsShowing))
-//   console.log('settings-clicked')
-// }
-
-// Overlay should be it's own component, and settings should be only for settings, not for color pickers.
-function createOverlay() {
-  div({class:'overlay-container'},
-    button({class:'btn circle undo-btn', click: undo},
-      i({class:'material-icons md-light md-36', innerText: 'undo'})
-    ),
-    colorButton({'@colorSelected': (color) => updateSettings({color: color})}),
-    // button({class:'btn circle setting-btn', click: () => showSettings([colorLayout])},
-    //   i({class:'material-icons md-light md-36', innerText: 'settings'})
-    // ),
-    button({class: 'btn circle clear-btn', click: clear},
-      i({class: 'material-icons md-light md-36', innerText: 'delete_forever'})
-    )
-  ).render(document.body)
 }
 
 function addServiceWorker() {

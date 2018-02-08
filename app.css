@@ -1,5 +1,6 @@
-canvas {
-  /* background-color: #eee; */
+
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
 body {
@@ -28,16 +29,6 @@ button {
 .material-icons.md-light { color: rgba(255, 255, 255, 1); }
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
-.overlay-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
 .btn {
   border-radius: 5px;
   pointer-events: all;
@@ -47,6 +38,7 @@ button {
   box-shadow: 3px 3px 10px 3px rgba(164, 164, 165, 0.3);
   outline: none;
 }
+
 .btn.circle {
   border-radius: 50%;
   width: 60px;
@@ -54,39 +46,57 @@ button {
   padding: 7px 5px 5px 5px;
 }
 
+.c-overlay-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.c-editing-buttons {
+  z-index: 10;
+  /* opacity: .99; */
+  width: 60px;
+  position: absolute;
+  justify-content: center;
+  right: 15px;
+  bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.c-editing-buttons .btn {
+  margin-top: 20px;
+}
+
 .setting-btn {
   position: absolute;
   right: 15px;
-  bottom: 15px;;
+  bottom: 15px;
   background-color: rgb(81, 94, 233);
 }
-
 .setting-btn:hover, .setting-btn:focus {
   background-color: rgba(81, 94, 233, .85);
 }
 
 .clear-btn {
-  position: absolute;
-  right: 15px;
-  top: 15px;
   background-color: rgb(200, 80, 80);  
 }
-
 .clear-btn:hover, .clear-btn:focus {
   background-color: rgba(200, 80, 80, .85);
 }
 
 .undo-btn {
-  position: absolute;
-  right: 90px;
-  top: 15px;
   background-color: rgb(120, 120, 120);  
 }
-
 .undo-btn:hover, .undo-btn:focus {
   background-color: rgba(120, 120, 120, .85);
 }
 
+/* 
 .color-container {
   position: absolute;
   right: 80px;
@@ -115,42 +125,7 @@ button {
   padding: 10px;
   opacity: 1;
   z-index: 0;
-}
-
-.custom-color-btn {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  z-index: 10;
-  opacity: .99;
-}
-
-.btn-red, .btn-blue, .btn-green, .custom-color-btn {
-  margin: 0 10px;
-}
-
-.btn-red {
-  background-color: rgb(163, 64, 64);  
-}
-.btn-red:hover, .btn-red:focus {
-  background-color: rgba(163, 64, 64, .85);
-}
-
-.btn-green {
-  background-color: rgb(91, 184, 91);  
-}
-
-.btn-green:hover, .btn-green:focus {
-  background-color: rgba(91, 184, 91, .85);
-}
-
-.btn-blue {
-  background-color: rgb(69, 69, 163);  
-}
-
-.btn-blue:hover, .btn-blue:focus {
-  background-color: rgba(69, 69, 163, .85);
-}
+} */
 
 .undo-btn:hover, .undo-btn:focus {
   background-color: rgba(120, 120, 120, .85);
@@ -165,7 +140,13 @@ button {
   width: 100vw;
   height: 100vh;
   z-index: 10;
+  /* opacity: 0; */
+  transition: opacity 2s ease-in;
 }
+/* .c-modal:not(:empty) {
+  opacity: 1;
+} */
+
 .c-modal__overlay {
   width: 100%;
   height: 100%;
@@ -200,9 +181,7 @@ button {
 
 /** Tabs **/
 
-.c-tab-layout {
-
-}
+.c-tab-layout {max-height: 100%;}
 
 .c-tab-layout__container {
   display: flex;
@@ -255,6 +234,7 @@ button {
 .c-color-picker__tabs {
   min-width: 250px;
   min-height: 350px;
+  max-height:  100%;
 }
 
 .c-color-picker {
@@ -297,7 +277,10 @@ button {
 
 .c-color-swatches {
   overflow: auto;
+  max-height:  100%;
+  height:  100%;
   padding: 5px 20px;
+  margin:  0 auto;
 }
 
 .c-color-swatches .btn {
