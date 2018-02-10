@@ -12,25 +12,25 @@ export const CUSTOM_DRAG_EVENT = 'customDragEvent'
  * 
  * @export
  * @param {HTMLElement} element 
- * @param {{start: function({x: number, y: number}, Event, HTMLElement), move: function({x: number, y: number}, Event, HTMLElement), finish: function({x: number, y: number}, Event, HTMLElement)}} handler
+ * @param {{start: function(Event, HTMLElement, {x: number, y: number}), move: function(Event, HTMLElement, {x: number, y: number}), finish: function(Event, HTMLElement, {x: number, y: number})}} handler
  */
 export function addDragHandler(element, handler) {
-  addEvent(element, 'mousedown', (tl, ev, elem) => {
-    handler.start(tl, ev, elem)
+  addEvent(element, 'mousedown', (ev, elem, xy) => {
+    handler.start(ev, elem, xy)
     let finishTimeout = null
-    let _finish = (endTl, endEv, elem) => {
+    let _finish = (endEv, elem, endXY) => {
       clearTimeout(finishTimeout)
-      handler.finish(endTl, endEv, elem)
+      handler.finish(endEv, elem, endXY)
       removeMoveEvent()
       removeStopEvent()
     }
 
     let removeStopEvent = addEvent(element, 'mouseup', _finish)
-    let removeMoveEvent = addEvent(element,  'mousemove', (mXY, mEV, elem) => {
+    let removeMoveEvent = addEvent(element,  'mousemove', (mEV, elem, mXY) => {
       clearTimeout(finishTimeout)
-      handler.move(mXY, mEV, elem)
+      handler.move(mEV, elem, mXY)
       finishTimeout = setTimeout(() => {
-        _finish(mXY, mEV, elem)
+        _finish(mEV, elem, mXY)
       }, 500)
     })
   })
@@ -42,15 +42,13 @@ export function addDragHandler(element, handler) {
  * @export
  * @param {HTMLElement} element 
  * @param {string} eventName 
- * @param {function({x: number, y: number}, Event, HTMLElement)} handler 
+ * @param {function(Event, HTMLElement, {x: number, y: number})} handler 
  * @returns {function()} remove
  */
 export function addEvent(element, eventName, handler) {
   let handle = (ev) => {
     ev.preventDefault()
-    let xy = getXY(ev)
-    // if (!xy) { return }
-    handler(xy, ev, element)
+    handler(ev, element, getXY(ev))
   }
   element.addEventListener(eventName, handle)
   if (!TOUCH_EVENT_MAP[eventName] || TOUCH_EVENT_MAP[eventName] === eventName) {

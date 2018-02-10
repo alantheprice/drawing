@@ -15,6 +15,16 @@ export class Color {
         this.b = b
         this.a = a || 1
     }
+
+    /**
+     * Sets the color's opacity
+     * 
+     * @param {number} opacity - Number between 0 and 1, 1 being full opacity
+     * @memberof Color
+     */
+    setOpacity(opacity) {
+        this.a = Math.min(opacity, 1)
+    }
     /**
      * 
      * 
@@ -31,7 +41,13 @@ export class Color {
     getAsCssValue() {
         return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`
     }
-
+    
+    /**
+     * 
+     * 
+     * @returns 
+     * @memberof Color
+     */
     copy() {
         return Object.assign(Color.prototype, this)
     }

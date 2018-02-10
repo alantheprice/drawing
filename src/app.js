@@ -1,5 +1,5 @@
 import { e, ElementDefinition } from './templater/ElementDefinition'
-import { controlOverlay } from './components/controlLayer'
+import { controlOverlay } from './components/controlOverlay'
 const {div, button, i } = e
 
 // initialize drawing

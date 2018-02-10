@@ -44,12 +44,12 @@ export class Path {
     let path = []
     let lastEvent = null
     return {
-      start: (xy, ev, elem) => {
+      start: (ev, elem, xy) => {
         path = [xy]
         console.log('start:', xy)
         lastEvent = Object.assign({}, xy)
       },
-      move: (moveXY, moveRE, moveElem) => {
+      move: (moveRE, moveElem, moveXY) => {
         moveRE.preventDefault()
         moveRE.stopPropagation()
         path.push(moveXY)

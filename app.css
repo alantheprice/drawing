@@ -16,6 +16,7 @@ button {
 }
 
 /* Rules for sizing the icon. */
+.material-icons.md-13 { font-size: 13px; }
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
@@ -46,6 +47,43 @@ button {
   padding: 7px 5px 5px 5px;
 }
 
+.o-relative {
+  position: relative;
+}
+
+.o-absolute {
+  position: absolute;
+}
+
+.o-fixed {
+  position: fixed;
+}
+
+.o-hide {
+  opacity: 0;
+}
+
+.o-none {
+  display: none;
+}
+.o-none.active {
+  display: block;
+}
+
+.o-hide.active {
+  opacity: 1;
+}
+
+.c-drag-overlay {
+  position: fixed;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: all;
+}
+
 .c-overlay-container {
   position: absolute;
   top: 0;
@@ -58,7 +96,6 @@ button {
 
 .c-editing-buttons {
   z-index: 10;
-  /* opacity: .99; */
   width: 60px;
   position: absolute;
   justify-content: center;
@@ -72,10 +109,37 @@ button {
   margin-top: 20px;
 }
 
+.brush-size-btn {
+  position:relative;
+  padding: 5px;
+  display: flex;
+  background-color: rgb(120, 120, 120);
+}
+.brush-size-btn .md-18 {
+ margin-left: 6px;
+}
+.brush-size-btn .md-36 {
+  margin-left: -12px;
+}
+
+.brush-size-btn.active {
+  z-index: 5;
+  padding-top: 6px;
+}
+/* .brush-size-btn.active.show-indicator:before { */
+/* .brush-size-btn:after {
+  position: absolute;
+  top: 0;
+  left: 30px;
+  content: '< <';
+  font-size: 90px;
+  color: rgba(40,40,40, .3);
+} */
+
 .setting-btn {
   position: absolute;
   right: 15px;
-  bottom: 15px;
+  top: 15px;
   background-color: rgb(81, 94, 233);
 }
 .setting-btn:hover, .setting-btn:focus {
@@ -160,8 +224,8 @@ button {
   background-color: #FFF;
   width: 400px;
   height: 500px;
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 79%;
+  max-height: 95%;
 }
 .c-modal__content {
   width: 100%;
@@ -181,12 +245,13 @@ button {
 
 /** Tabs **/
 
-.c-tab-layout {max-height: 100%;}
+.c-tab-layout {max-height: 100%;overflow:  hidden;}
 
 .c-tab-layout__container {
   display: flex;
   justify-content: space-between;
   flex-direction:  column;
+  overflow: hidden;
 }
 
 
@@ -201,6 +266,7 @@ button {
 
 .c-tab-layout__tab.active {
   display: block;
+  overflow: hidden;
 }
 
 .c-tab-layout__button {
@@ -272,12 +338,13 @@ button {
 /** Swatches **/
 
 .c-color-swatches__container {
-  margin: 20px auto;
+  margin: 10px auto;
+  overflow:  hidden;
 }
 
 .c-color-swatches {
   overflow: auto;
-  max-height:  100%;
+  max-height: 270px;
   height:  100%;
   padding: 5px 20px;
   margin:  0 auto;

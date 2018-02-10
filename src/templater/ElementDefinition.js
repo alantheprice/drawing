@@ -2,7 +2,7 @@ import { renderElement } from './renderUtils.js'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT, TOUCH_EVENT_MAP } from '../eventHandling/event'
 import { ELEMENTS, EVENTS } from './constants.js'
 const DIRECT_SET_ATTRIBUTES = ['innerText', 'className', 'value']
-
+const VIRTUAL_ELEMENT = 'virtual'
 const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
         obj[next] = 'handlers'
         return obj
@@ -18,8 +18,9 @@ export class ElementDefinition {
      */
     constructor(tagName, config, children) {
         this.tagName = tagName
+        this.config = config
         let parsedOut = Object.keys(config.attributes).reduce(parse, 
-            {attrs: {class: ''}, subscriptions: {}, passThrough: {}, o: config.attributes})
+            {attrs: {class: '', style: ''}, subscriptions: {}, passThrough: {}, o: config.attributes})
         this.passThrough = parsedOut.passThrough
         this.subscriptions = parsedOut.subscriptions
         this.attrs = parsedOut.attrs
@@ -38,7 +39,7 @@ export class ElementDefinition {
      * Renders the element and children to the DOM
      * 
      * @param {HTMLElement} parentElement
-     * @param {ElementDefinition} [parentScope] 
+     * @param {ElementDefinition} [elementDef] 
      * @returns {HTMLElement}
      * @memberof ElementDefinition
      */
@@ -46,7 +47,7 @@ export class ElementDefinition {
         if (!this.tagName) {
             throw new Error('tagName must be defined')
         }
-        let scope = {element: renderElement(this.tagName, this.attrs, this.innerText, parentElement)}  
+        let scope = { element: getElement(this, parentElement) }  
         if (this.children) {
             scope.children = this.children.map((child) => {
                 if (!(child instanceof ElementDefinition)) {
@@ -55,23 +56,40 @@ export class ElementDefinition {
                 return child.render(scope.element, this)
             })
         }
-        addEventHandlers(scope.element, this.handlers, this)
         this.element = scope.element
+        addEventHandlers(this.handlers, this)
         if (elementDef) {
             this.parent = elementDef
         }
         return scope.element
     }
 
+    addEventListener(evName, handler) {
+        if (!this.element) {
+            this.handlers[evName] = handler
+            return
+        }
+        if (evName === CUSTOM_DRAG_EVENT) {
+            addDragHandler(this.element, handler)
+        } else if (Object.keys(TOUCH_EVENT_MAP).indexOf(evName) > -1) {
+            addEvent(this.element, evName, handler)
+        } else {
+            document.addEventListener(evName, (e) => {
+                handler(e, this)
+            })
+        }
+    }
+
     /**
-     * 
+     * Emits events to subscribers.  
+     * -- Subscribers are defined on the instance as attributes(attrs) whose property names begin with: '@'
+     * - When actually referencing subscribers, we no longer use the '@' part of the property name since it only exists to map subscriptions
      * 
      * @param {string} messageName 
      * @param {any} [messageContent]
      * @memberof ElementDefinition
      */
     emit(messageName, messageContent) {
-        debugger
         if (typeof this.subscriptions[messageName] === 'function') {
             this.subscriptions[messageName](messageContent)
         }
@@ -79,6 +97,10 @@ export class ElementDefinition {
 
     querySelector(selector) {
         throw new Error('querySelector has yet to be implemented')
+    }
+
+    isVirtual() {
+        return this.tagName === VIRTUAL_ELEMENT
     }
 
     /**
@@ -92,6 +114,7 @@ export class ElementDefinition {
             return
         }
         this.className = [this.className, className].join(' ')
+        this.attrs.class = this.className
     }
 
     /**
@@ -105,6 +128,7 @@ export class ElementDefinition {
             return
         }
         this.className = this.className.split(' ').filter((cn) => cn !== className).join(' ')
+        this.attrs.class = this.className
     }
 
     setActive(active) {
@@ -118,6 +142,35 @@ export class ElementDefinition {
         }
         this.parent = null
     }
+
+    /**
+     * Gets X and Y offset from window.
+     * 
+     * @returns {{x: number, y: number}}
+     * @memberof ElementDefinition
+     */
+    windowOffset() {
+        let offset = {x: this.element.offsetLeft, y: this.element.offsetTop}
+        let current = this.element.parentElement
+        while (current.parentElement) {
+            offset.x += current.offsetLeft
+            offset.y += current.offsetTop
+            current = current.parentElement
+        }
+        return offset
+    }
+
+    clone() {
+        let chs = (this.children || []).map((el) => el.clone())
+        return new ElementDefinition(this.tagName, this.config, chs)
+    }
+}
+
+function getElement(elementDef, parentElement) {
+    if (elementDef.isVirtual()) {
+        return parentElement
+    }
+    return renderElement(elementDef.tagName, elementDef.attrs, elementDef.innerText, parentElement)
 }
 
 function parse(agg, key) {
@@ -158,7 +211,7 @@ function define(obj, key, value, setter) {
           if (obj[innerName] === val) { return }
           if (obj.element && DIRECT_SET_ATTRIBUTES.indexOf(mKey) > -1) {
             obj.element[mKey] = val + ''
-          } else if (obj.element && obj.attrs[key]) {
+          } else if (obj.element && typeof obj.attrs[key] !== 'undefined') {
             obj.element.setAttribute(key, val)
           }
           obj[innerName] = val
@@ -173,20 +226,12 @@ function define(obj, key, value, setter) {
 }
 
 
-function addEventHandlers(elem, handlers, scope) {
+function addEventHandlers(handlers, scope) {
     if (!handlers) { return }
     Object.keys(handlers).map((domEventName) => {
         return {name: domEventName, handler: handlers[domEventName]}
     }).forEach((ev) => {
-        if (ev.name === CUSTOM_DRAG_EVENT) {
-            addDragHandler(elem, ev.handler)
-        } else if (Object.keys(TOUCH_EVENT_MAP).indexOf(ev.name) > -1) {
-            addEvent(elem, ev.name, ev.handler)
-        } else {
-            document.addEventListener(ev.name, (e) => {
-                ev.handler(e, scope)
-            })
-        }
+        scope.addEventListener(ev.name, ev.handler)
     })
 }
 
@@ -225,7 +270,8 @@ function getBuilder(tagName) {
 }
 
 let exportable = {
-    ElementDefinition: ElementDefinition
+    ElementDefinition: ElementDefinition,
+    virtual: getBuilder('virtual')
 }
 
 exportable = ELEMENTS.reduce((agg, next) => {
