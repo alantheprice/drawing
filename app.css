@@ -71,9 +71,12 @@ button {
   margin: auto;
 }
 
-.o-marign--v-auto {
+.o-margin--v-auto {
   margin-top: auto;
   margin-bottom: auto;
+}
+.o-margin--t-auto {
+  margin-top: auto;
 }
 
 .o-margin--h-auto {
@@ -108,7 +111,7 @@ button {
 }
 
 .o-bkg--black {
-  background-color: #000;
+  background-color: #202020;
 }
 
 .o-width--100 {
@@ -217,6 +220,43 @@ button {
   flex-direction: column;
   margin: auto;
   background-color: #FFF;
+}
+
+.c-brush-size__indicator-container {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: calc(100% - 180px);
+  left: 20px;
+  bottom: 40px;
+  height: 100px;
+}
+
+.c-brush-size__indicator {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 50px;
+}
+
+.c-brush-size__indicator-line {
+  margin-top: 20px;
+  width: 100%;
+  height: 2px;
+  border-radius: 1px;
+}
+
+
+
+.c-brush-size__drag-arrows {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  width: 80px;
+  right: 80px;
+  bottom: 15px;
+  height: 50px;
 }
 
 .setting-btn {

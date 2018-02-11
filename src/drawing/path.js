@@ -18,7 +18,6 @@ export class Path {
   }
 
   undo() {
-    console.log('begin undo')
     this.clear()
     this.redo.push(this.paths.pop())
     this.drawAllPaths(this.paths)
@@ -27,7 +26,7 @@ export class Path {
   /**
    * Updates the line settings for the path
    * 
-   * @param {{}}  nameValueSetting 
+   * @param {{[x: string]: any}}  nameValueSetting 
    * @memberof Path
    */
   updateSettings(nameValueSetting) {
@@ -35,7 +34,6 @@ export class Path {
     if (nameValueSetting.color && nameValueSetting.color.a !== 1) {
       this.settings.opacity = nameValueSetting.color.a
     }
-    console.warn(this.settings)
   }
 
   /**
@@ -48,7 +46,6 @@ export class Path {
     return {
       start: (ev, elem, xy) => {
         path = [xy]
-        console.log('start:', xy)
         lastEvent = Object.assign({}, xy)
       },
       move: (moveRE, moveElem, moveXY) => {

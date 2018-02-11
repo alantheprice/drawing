@@ -28,7 +28,18 @@ export function brushSizeButton(config) {
                     )
                 )
             ),
-            div({class: ''})
+            div({class: 'c-brush-size__indicator-container'},
+                div({class: 'c-brush-size__indicator'},
+                    [50, 40, 30, 20, 10, 5].map((size) => {
+                        return div({class: 'circle o-bkg--black o-margin--t-auto', style: `width: ${size}px; height: ${size}px`})
+                    })
+                ),
+                div({class: 'c-brush-size__indicator-line o-bkg--black'})
+            ),
+            div({class: 'c-brush-size__drag-arrows'},
+                i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' }),
+                i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' })
+            )
         )
     )
 
@@ -38,7 +49,6 @@ export function brushSizeButton(config) {
         if (moveX > width) { return }
         let brushSize = (width - moveX) / multiplier
         updateSize(brushSize)
-        console.warn(ev, moveX, brushSize, multiplier)
     }
 
     function handleClick(ev, scope) {

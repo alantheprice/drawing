@@ -9,7 +9,7 @@ const {div, button, i, virtual } = e
  * Brush control virtual component
  * 
  * @export
- * @param {{'@updateSettings': function({any}), ':currentSettings': Setting}} config
+ * @param {{'@updateSettings': function({[x:string]: any}), ':currentSettings': Setting}} config
  * @returns {ElementDefinition}
  */
 export function brushControl(config) {

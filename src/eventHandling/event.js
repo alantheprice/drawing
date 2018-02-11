@@ -47,7 +47,7 @@ export function addDragHandler(elementDef, handler) {
  */
 export function addEvent(elementDef, eventName, handler) {
   let handle = (ev) => {
-    // ev.preventDefault()
+    ev.preventDefault()
     handler(ev, elementDef, getXY(ev))
   }
   elementDef.element.addEventListener(eventName, handle)
@@ -83,7 +83,6 @@ function getXY(ev) {
  * @returns {{x: number, y: number}}
  */
 function getTouchXY(ev) {
-  console.warn('touch', ev)
   let touchX = ev.touches[0].clientX
   let touchY = ev.touches[0].clientY
   
