@@ -70,14 +70,10 @@ export class ElementDefinition {
             return
         }
         if (evName === CUSTOM_DRAG_EVENT) {
-            addDragHandler(this.element, handler)
-        } else if (Object.keys(TOUCH_EVENT_MAP).indexOf(evName) > -1) {
-            addEvent(this.element, evName, handler)
-        } else {
-            document.addEventListener(evName, (e) => {
-                handler(e, this)
-            })
+            addDragHandler(this, handler)
+            return
         }
+        addEvent(this, evName, handler)
     }
 
     /**

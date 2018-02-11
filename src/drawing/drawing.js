@@ -8,7 +8,7 @@ const ctx = canvas.getContext('2d')
 const path = new Path(canvas, ctx, clear)
 
 export function init() {
-  addDragHandler(canvas, path.startDrawing())
+  addDragHandler({element: canvas}, path.startDrawing())
 }
 
 export function clear() {
@@ -20,6 +20,6 @@ export function undo() {
   path.undo()
 }
 
-export function updateSettings(newSettings) {
-  path.updateSettings(newSettings)
+export function updateSettings(newSetting) {
+  path.updateSettings(newSetting)
 }

@@ -1,4 +1,5 @@
 import { LocalStore } from '../storage/localStorage'
+import { Setting } from '../settings/Setting'
 import { Color } from '../color/Color'
 const store = new LocalStore()
 
@@ -12,10 +13,7 @@ export class Path {
     this.redo = []
     this.canvas = canvas
     // setting defaults
-    this.settings = {
-      lineWidth: 5,
-      color: new Color(20, 45, 200, .5)
-    }
+    this.settings = new Setting(new Color(20, 45, 200), 5, 1)
     this.restorePath()
   }
 
@@ -29,11 +27,15 @@ export class Path {
   /**
    * Updates the line settings for the path
    * 
-   * @param {{lineWidth: number, color: string}} settings 
+   * @param {{}}  nameValueSetting 
    * @memberof Path
    */
-  updateSettings(settings) {
-    this.settings = Object.assign(this.settings, settings)
+  updateSettings(nameValueSetting) {
+    this.settings = Object.assign(this.settings, nameValueSetting)
+    if (nameValueSetting.color && nameValueSetting.color.a !== 1) {
+      this.settings.opacity = nameValueSetting.color.a
+    }
+    console.warn(this.settings)
   }
 
   /**
@@ -64,7 +66,7 @@ export class Path {
    * 
    * 
    * @param {any} points 
-   * @param {{lineWidth: number, color: Color}} settings 
+   * @param {Setting} settings 
    * @memberof Path
    */
   drawLine(points, settings) {
@@ -78,6 +80,7 @@ export class Path {
       this.ctx.lineTo(points.x, points.y)
     })
     this.ctx.lineWidth = settings.lineWidth
+    this.ctx.lineCap = 'round'
     this.ctx.strokeStyle = settings.color.getAsCssValue()
     this.ctx.stroke()
   }
@@ -86,11 +89,11 @@ export class Path {
    * 
    * 
    * @param {any} path 
-   * @param {{lineWidth: number, color: Color}} settings 
+   * @param {Setting} settings 
    * @memberof Path
    */
   savePath(path, settings) {
-    this.paths.push({path: path, settings: Object.assign({}, settings)})
+    this.paths.push({path: path, settings: settings.copy()})
     // this.clear()
     // this.drawAllPaths(this.paths)
     store.save('paths', this.paths)

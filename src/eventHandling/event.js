@@ -11,12 +11,12 @@ export const CUSTOM_DRAG_EVENT = 'customDragEvent'
  * 
  * 
  * @export
- * @param {HTMLElement} element 
- * @param {{start: function(Event, HTMLElement, {x: number, y: number}), move: function(Event, HTMLElement, {x: number, y: number}), finish: function(Event, HTMLElement, {x: number, y: number})}} handler
+ * @param {{element: HTMLElement}} elementDef
+ * @param {{start: function(Event, {element: HTMLElement}, {x: number, y: number}), move: function(Event, {element: HTMLElement}, {x: number, y: number}), finish: function(Event, {element: HTMLElement}, {x: number, y: number})}} handler
  */
-export function addDragHandler(element, handler) {
-  addEvent(element, 'mousedown', (ev, elem, xy) => {
-    handler.start(ev, elem, xy)
+export function addDragHandler(elementDef, handler) {
+  addEvent(elementDef, 'mousedown', (ev, elem, xy) => {
+    handler.start(ev, elementDef, xy)
     let finishTimeout = null
     let _finish = (endEv, elem, endXY) => {
       clearTimeout(finishTimeout)
@@ -25,8 +25,8 @@ export function addDragHandler(element, handler) {
       removeStopEvent()
     }
 
-    let removeStopEvent = addEvent(element, 'mouseup', _finish)
-    let removeMoveEvent = addEvent(element,  'mousemove', (mEV, elem, mXY) => {
+    let removeStopEvent = addEvent(elementDef, 'mouseup', _finish)
+    let removeMoveEvent = addEvent(elementDef,  'mousemove', (mEV, elem, mXY) => {
       clearTimeout(finishTimeout)
       handler.move(mEV, elem, mXY)
       finishTimeout = setTimeout(() => {
@@ -40,27 +40,27 @@ export function addDragHandler(element, handler) {
  * 
  * 
  * @export
- * @param {HTMLElement} element 
+ * @param {{element: HTMLElement}} elementDef
  * @param {string} eventName 
- * @param {function(Event, HTMLElement, {x: number, y: number})} handler 
+ * @param {function(Event, {element: HTMLElement}, {x: number, y: number})} handler 
  * @returns {function()} remove
  */
-export function addEvent(element, eventName, handler) {
+export function addEvent(elementDef, eventName, handler) {
   let handle = (ev) => {
-    ev.preventDefault()
-    handler(ev, element, getXY(ev))
+    // ev.preventDefault()
+    handler(ev, elementDef, getXY(ev))
   }
-  element.addEventListener(eventName, handle)
+  elementDef.element.addEventListener(eventName, handle)
   if (!TOUCH_EVENT_MAP[eventName] || TOUCH_EVENT_MAP[eventName] === eventName) {
     return function remove() {
-      element.removeEventListener(eventName, handle)
+      elementDef.element.removeEventListener(eventName, handle)
     }
   }
-  element.addEventListener(TOUCH_EVENT_MAP[eventName], handle)
+  elementDef.element.addEventListener(TOUCH_EVENT_MAP[eventName], handle)
 
   return function remove() {
-    element.removeEventListener(eventName, handle)
-    element.removeEventListener(TOUCH_EVENT_MAP[eventName], handle)
+    elementDef.element.removeEventListener(eventName, handle)
+    elementDef.element.removeEventListener(TOUCH_EVENT_MAP[eventName], handle)
   }
 }
 
@@ -83,6 +83,7 @@ function getXY(ev) {
  * @returns {{x: number, y: number}}
  */
 function getTouchXY(ev) {
+  console.warn('touch', ev)
   let touchX = ev.touches[0].clientX
   let touchY = ev.touches[0].clientY
   

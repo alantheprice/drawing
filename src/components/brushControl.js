@@ -9,7 +9,7 @@ const {div, button, i, virtual } = e
  * Brush control virtual component
  * 
  * @export
- * @param {{'@updateSettings': function(Setting), ':currentSettings': Setting}} config
+ * @param {{'@updateSettings': function({any}), ':currentSettings': Setting}} config
  * @returns {ElementDefinition}
  */
 export function brushControl(config) {
@@ -31,8 +31,6 @@ export function brushControl(config) {
      * @param {any} value 
      */
     function updateSettings(name, value) {
-        let ns = currentSettings.copy()
-        ns[name] = value
-        config['@updateSettings'](ns)
+        config['@updateSettings']({[name]: value})
     }
 }

@@ -12,17 +12,16 @@ const { button, i, div } = e
  */
 export function dragButton(config, mainButton, ...overlayContent) {
     let sPoint = {win: {x: 0, y: 0}, view: {x: 0, y:0}}
-    let dragHandle = handleDrag()
+    let dragHandle = getDragHandler()
 
-    let dragOverlay = div({class: 'o-none c-drag-overlay c-modal_overlay', mousemove: dragHandle.move, mouseup: dragHandle.finish},
+    let dragOverlay = div({class: 'c-drag-overlay', customDragEvent: dragHandle}, 
         overlayContent
     )
 
     let dragButton = mainButton.clone()
     dragButton.addClass('o-fixed o-none')
-    mainButton.addEventListener('mousedown', dragHandle.start)
 
-    let container = div({},
+    let container = div({class: 'o-relative'},
         mainButton,
         dragOverlay,
         dragButton
@@ -30,34 +29,38 @@ export function dragButton(config, mainButton, ...overlayContent) {
 
     return container
 
-    function handleDrag() {
+    function getDragHandler() {
         // here we need to detect quick exit and assume that it is a click
         let moving = false
         let isClick = true
         let timeoutId = null
+        function setFinishDelay(ev, elem, xy, timeout) {
+            clearTimeout(timeoutId)
+            timeoutId = setTimeout(() => dragHandle.finish(ev, elem, xy), timeout)
+        }
         return {
             start: (ev, elem, xy) => {
                 isClick = true
                 moving = true
                 sPoint.view = xy
                 sPoint.win = container.windowOffset()
-                timeoutId = setTimeout(() => dragHandle.finish(ev, elem, xy), 500)
+                setFinishDelay(ev, elem, xy, 500)
                 setDragging(true)
                 dragButton.style = `left: ${sPoint.win.x}px; top: ${sPoint.win.y}px;`
             },
-            move: (ev, elem, mXY) => {
-                if (!moving || !mXY) { return }
-                clearTimeout(timeoutId)
-                timeoutId = setTimeout(() => dragHandle.finish(ev, elem, mXY), 300)
-                let move = mXY.x - sPoint.view.x
+            move: (ev, elem, xy) => {
+                if (!moving || !xy) { return }
+                setFinishDelay(ev, elem, xy, 500)
+                let move = xy.x - sPoint.view.x
                 let moveInWin = move + sPoint.win.x
                 if (Math.abs(move) > 10) {
                     isClick = false
                 }
-                config['@move'](ev, mXY.x)
+                config['@move'](ev, xy.x)
                 dragButton.style = `left: ${moveInWin}px; top: ${sPoint.win.y}px;`
             },
-            finish: (ev, elem, fXY) => {
+            finish: (ev, elem, xy) => {
+                clearTimeout(timeoutId)
                 if (!moving) { return }
                 moving = false
                 setDragging(false)
