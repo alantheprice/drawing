@@ -11,17 +11,15 @@ const { button, i, div } = e
  * @returns 
  */
 export function dragButton(config, mainButton, ...overlayContent) {
-    debugger
     let sPoint = {win: {x: 0, y: 0}, view: {x: 0, y:0}}
     let dragHandle = handleDrag()
 
-    let dragOverlay = div({class: 'o-none c-drag-overlay', mousemove: dragHandle.move, mouseup: dragHandle.finish},
+    let dragOverlay = div({class: 'o-none c-drag-overlay c-modal_overlay', mousemove: dragHandle.move, mouseup: dragHandle.finish},
         overlayContent
     )
 
     let dragButton = mainButton.clone()
-    dragButton.addClass('o-fixed')
-    dragButton.addClass('o-hide')
+    dragButton.addClass('o-fixed o-none')
     mainButton.addEventListener('mousedown', dragHandle.start)
 
     let container = div({},
@@ -36,7 +34,7 @@ export function dragButton(config, mainButton, ...overlayContent) {
         // here we need to detect quick exit and assume that it is a click
         let moving = false
         let isClick = true
-        let timeoutId
+        let timeoutId = null
         return {
             start: (ev, elem, xy) => {
                 isClick = true
@@ -48,7 +46,7 @@ export function dragButton(config, mainButton, ...overlayContent) {
                 dragButton.style = `left: ${sPoint.win.x}px; top: ${sPoint.win.y}px;`
             },
             move: (ev, elem, mXY) => {
-                if (!moving) { return }
+                if (!moving || !mXY) { return }
                 clearTimeout(timeoutId)
                 timeoutId = setTimeout(() => dragHandle.finish(ev, elem, mXY), 300)
                 let move = mXY.x - sPoint.view.x
@@ -56,7 +54,7 @@ export function dragButton(config, mainButton, ...overlayContent) {
                 if (Math.abs(move) > 10) {
                     isClick = false
                 }
-                config['@move'](ev, move)
+                config['@move'](ev, mXY.x)
                 dragButton.style = `left: ${moveInWin}px; top: ${sPoint.win.y}px;`
             },
             finish: (ev, elem, fXY) => {

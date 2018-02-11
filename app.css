@@ -1,4 +1,3 @@
-
 *, *:before, *:after {
   box-sizing: border-box;
 }
@@ -8,6 +7,7 @@ body {
   margin: 0;
   overflow: hidden;
   font-family: 'Helvetica';
+  font-size: 1rem;
 }
 
 button {
@@ -40,8 +40,12 @@ button {
   outline: none;
 }
 
-.btn.circle {
+.circle {
   border-radius: 50%;
+}
+
+.btn.circle {
+  /* border-radius: 50%; */
   width: 60px;
   height: 60px;
   padding: 7px 5px 5px 5px;
@@ -63,11 +67,72 @@ button {
   opacity: 0;
 }
 
-.o-none {
+.o-margin--auto {
+  margin: auto;
+}
+
+.o-marign--v-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.o-margin--h-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.o-margin--b-20 {
+  margin-bottom: 20px;
+}
+
+.o-flex {
+  display: flex;
+}
+.o-flex--space-btw {
+  justify-content: space-between;
+}
+
+.o-flex--column {
+  display: flex;
+  flex-direction: column;
+}
+
+.o-none, .o-none.o-flex {
   display: none;
 }
 .o-none.active {
   display: block;
+}
+.o-none.o-flex.active {
+  display: flex;
+}
+
+.o-bkg--black {
+  background-color: #000;
+}
+
+.o-width--100 {
+  width: 100%;
+}
+
+.o-height--100 {
+  height: 100%;
+}
+
+.o-width--80 {
+  width: 80%;
+}
+
+.o-height--80 {
+  height: 80%;
+}
+
+.o-width--20 {
+  width: 20%;
+}
+
+.o-height--20 {
+  height: 20%;
 }
 
 .o-hide.active {
@@ -76,11 +141,12 @@ button {
 
 .c-drag-overlay {
   position: fixed;
-  z-index: 6;
+  z-index: 3;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  background-color: rgba(120,120,120,.5);
   pointer-events: all;
 }
 
@@ -109,10 +175,9 @@ button {
   margin-top: 20px;
 }
 
+/** Brush size button**/
 .brush-size-btn {
-  position:relative;
   padding: 5px;
-  display: flex;
   background-color: rgb(120, 120, 120);
 }
 .brush-size-btn .md-18 {
@@ -121,20 +186,20 @@ button {
 .brush-size-btn .md-36 {
   margin-left: -12px;
 }
-
 .brush-size-btn.active {
-  z-index: 5;
+  z-index: 4;
+  pointer-events: none;
   padding-top: 6px;
 }
-/* .brush-size-btn.active.show-indicator:before { */
-/* .brush-size-btn:after {
-  position: absolute;
-  top: 0;
-  left: 30px;
-  content: '< <';
-  font-size: 90px;
-  color: rgba(40,40,40, .3);
-} */
+
+.c-brush-size__editing-overlay {
+  display: flex;
+  padding: 35px;
+  border-radius: 5px;
+  flex-direction: column;
+  margin: auto;
+  background-color: #FFF;
+}
 
 .setting-btn {
   position: absolute;
@@ -212,9 +277,9 @@ button {
 } */
 
 .c-modal__overlay {
+  display: flex;
   width: 100%;
   height: 100%;
-  display: flex;
   background-color: rgba(120,120,120,.8);
 }
 .c-modal__inner-container {
@@ -254,7 +319,6 @@ button {
   overflow: hidden;
 }
 
-
 .c-tab-layout__button-container {
   display: flex;
   width: 100%;
@@ -279,7 +343,6 @@ button {
   background-color: rgba(90,90,90, .2);
   text-transform: uppercase;
   text-align: center;
-
 }
 
 .c-tab-layout__button
@@ -352,4 +415,25 @@ button {
 
 .c-color-swatches .btn {
   margin: 5px;
+}
+
+.txt {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.hdg {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.hdg--1 {
+  font-size: 2rem;
+}
+
+.hdg--2 {
+  font-size: 1.5rem;
+}
+
+.hdg--3 {
+  font-size: 1.3rem;
 }

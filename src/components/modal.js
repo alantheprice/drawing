@@ -21,8 +21,8 @@ export default function (element) {
  * @returns 
  */
 function createModal(elementContent) {
-    let modal = div({class:'c-modal'}, 
-        div({class: 'c-modal__overlay'}, 
+    let modal = div({class:'c-modal'},
+        div({class: 'c-modal__overlay o-flex'},
             div({class: 'c-modal__inner-container'},
                 div({class: 'c-modal__content'},
                     elementContent

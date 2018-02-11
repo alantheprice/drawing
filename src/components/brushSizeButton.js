@@ -10,78 +10,46 @@ const { button, i, div } = e
  * @returns 
  */
 export function brushSizeButton(config) {
+    let currentSize = config[':currentSize']
+    let sizeDisplay = div({class: 'circle o-bkg--black o-margin--h-auto o-margin--b-20', style: `width: ${currentSize}px; height: ${currentSize}px;`})
+    let sizeDescription = div({class: 'hdg hdg--2', innerText: `${currentSize}px line width`})
+
     return dragButton({'@move': handleMove, '@click': handleClick},
-        button({class: 'btn circle brush-size-btn'},
+        button({class: 'btn circle brush-size-btn o-flex'},
             i({ class: 'material-icons md-light md-18', innerText: 'brush' }),
             i({ class: 'material-icons md-light md-36', innerText: 'brush' }),
         ),
-        div({innerText: 'helloWorld!'})
+        div({class: 'o-width--100 o-height--100 o-relative'}, 
+            div({class: 'o-flex--column o-width--100 o-height--100'},
+                div({class: 'o-flex--column o-margin--auto'},
+                    div({class: 'c-brush-size__editing-overlay'},
+                        sizeDisplay,
+                        sizeDescription
+                    )
+                )
+            ),
+            div({class: ''})
+        )
     )
 
     function handleMove(ev, moveX) {
-        console.warn(ev, moveX)
+        let width = window.innerWidth - 150
+        let multiplier = width / 50
+        if (moveX > width) { return }
+        let brushSize = (width - moveX) / multiplier
+        updateSize(brushSize)
+        console.warn(ev, moveX, brushSize, multiplier)
     }
 
     function handleClick(ev, scope) {
         console.warn('clicked!!!')
     }
 
+    function updateSize(size) {
+        size = Math.round(Math.max(size, 1))
+        sizeDisplay.style =`width: ${size}px; height: ${size}px;`
+        sizeDescription.innerText = `${size}px line width`
+        config['@sizeSelected'](size)
+    }
+
 }
-    /*
-    let sPoint = {win: {x: 0, y: 0}, view: {x: 0, y:0}}
-    let dragHandle = handleDrag()
-
-    let dragOverlay = div({class: 'o-none c-drag-overlay', mousemove: dragHandle.move, mouseup: dragHandle.finish},
-    )
-
-    let dragButton = div({class: 'o-fixed o-hide btn circle brush-size-btn', style: ''},
-        i({ class: 'material-icons md-light md-18', innerText: 'brush' }),
-        i({ class: 'material-icons md-light md-36', innerText: 'brush' })
-    )
-    let _button = button({class: 'btn circle brush-size-btn', mousedown: dragHandle.start},
-        i({ class: 'material-icons md-light md-18', innerText: 'brush' }),
-        i({ class: 'material-icons md-light md-36', innerText: 'brush' }),
-    )
-
-    let container =  div({},
-        _button,
-        dragOverlay,
-        dragButton
-    )
-
-    return container
-
-    function handleDrag() {
-        let moving = false
-        let timeoutId
-        return {
-            start: (ev, elem, xy) => {
-                moving = true
-                sPoint.view = xy
-                sPoint.win = container.windowOffset()
-                timeoutId = setTimeout(() => dragHandle.finish(ev, elem, xy), 500)
-                setDragging(true)
-                dragButton.style = `left: ${sPoint.win.x}px; top: ${sPoint.win.y}px;`
-            },
-            move: (ev, elem, mXY) => {
-                if (!moving) { return }
-                clearTimeout(timeoutId)
-                timeoutId = setTimeout(() => dragHandle.finish(ev, elem, mXY), 200)
-                let move = (mXY.x - sPoint.view.x) + sPoint.win.x
-                dragButton.style = `left: ${move}px; top: ${sPoint.win.y}px;`
-            },
-            finish: (fRE, elem, fXY) => {
-                if (!moving) { return }
-                moving = false
-                setDragging(false)
-                dragButton.style = ''
-            }
-        }
-    }
-
-    function setDragging(dragging) {
-        _button[(dragging) ? 'addClass' : 'removeClass']('o-hide')
-        dragButton.setActive(dragging)
-        dragOverlay.setActive(dragging)
-    }
-} */
