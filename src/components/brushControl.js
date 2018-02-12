@@ -1,9 +1,9 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
+import { e } from '../templater/ElementDefinition'
 import { Color } from '../color/Color'
 import { colorButton } from './colorButton'
 import { brushSizeButton } from './brushSizeButton'
 import { Setting } from '../settings/Setting'
-const {div, button, i, virtual } = e
+const {div, button, i, virtual, ElementDefinition } = e
 
 /**
  * Brush control virtual component
@@ -17,20 +17,20 @@ export function brushControl(config) {
     return virtual({},
         colorButton({
             ':currentColor': currentSettings.color, 
-            '@colorSelected': (color) => updateSettings('color', color)
+            '@colorSelected': updateSettings('color')
         }),
         brushSizeButton({
             ':currentSize': currentSettings.lineWidth, 
-            '@sizeSelected': (size) => updateSettings('lineWidth', size)
+            '@sizeSelected': updateSettings('lineWidth')
         })
     )
 
     /**
-     * 
      * @param {string} name 
-     * @param {any} value 
      */
-    function updateSettings(name, value) {
-        config['@updateSettings']({[name]: value})
+    function updateSettings(name) {
+        return (value) => {
+            config['@updateSettings']({[name]: value})
+        }
     }
 }

@@ -1,5 +1,5 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
-const { button, i, div } = e
+import { e } from '../templater/ElementDefinition'
+const { button, i, div, E, ElementDefinition } = e
 
 /**
  * Brush Size Button selector component
@@ -13,21 +13,24 @@ const { button, i, div } = e
 export function dragButton(config, mainButton, ...overlayContent) {
     let sPoint = {win: {x: 0, y: 0}, view: {x: 0, y:0}}
     let dragHandle = getDragHandler()
+    let dragOverlayId = Symbol('dragOverlay')
+    let containerId = Symbol('dragContainer')
 
-    let dragOverlay = div({class: 'c-drag-overlay', customDragEvent: dragHandle}, 
-        overlayContent
-    )
+    // div({class: 'c-brush-size__drag-arrows'},
+    //     i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' }),
+    //     i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' })
+    // )
 
     let dragButton = mainButton.clone()
     dragButton.addClass('o-fixed o-none')
 
-    let container = div({class: 'o-relative'},
+    return div({class: 'o-relative', handle: containerId},
         mainButton,
-        dragOverlay,
+        div({class: 'c-drag-overlay', customDragEvent: dragHandle, handle: dragOverlayId}, 
+            overlayContent
+        ),
         dragButton
     )
-
-    return container
 
     function getDragHandler() {
         // here we need to detect quick exit and assume that it is a click
@@ -43,7 +46,7 @@ export function dragButton(config, mainButton, ...overlayContent) {
                 isClick = true
                 moving = true
                 sPoint.view = xy
-                sPoint.win = container.windowOffset()
+                sPoint.win = E.getHandle(containerId).windowOffset()
                 setFinishDelay(ev, elem, xy, 500)
                 setDragging(true)
                 dragButton.style = `left: ${sPoint.win.x}px; top: ${sPoint.win.y}px;`
@@ -84,6 +87,6 @@ export function dragButton(config, mainButton, ...overlayContent) {
     function setDragging(dragging) {
         mainButton[(dragging) ? 'addClass' : 'removeClass']('o-hide')
         dragButton.setActive(dragging)
-        dragOverlay.setActive(dragging)
+        E.getHandle(dragOverlayId).setActive(dragging)
     }
 }

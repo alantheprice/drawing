@@ -1,6 +1,6 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
+import { e } from '../templater/ElementDefinition'
 import { dragButton } from './dragButton'
-const { button, i, div } = e
+const { button, i, div, E, ElementDefinition } = e
 
 /**
  * Brush Size Button selector component
@@ -11,9 +11,7 @@ const { button, i, div } = e
  */
 export function brushSizeButton(config) {
     let currentSize = config[':currentSize']
-    let sizeDisplay = div({class: 'circle o-bkg--black o-margin--h-auto o-margin--b-20', style: `width: ${currentSize}px; height: ${currentSize}px;`})
-    let sizeDescription = div({class: 'hdg hdg--2', innerText: `${currentSize}px line width`})
-
+    
     return dragButton({'@move': handleMove, '@click': handleClick},
         button({class: 'btn circle brush-size-btn o-flex'},
             i({ class: 'material-icons md-light md-18', innerText: 'brush' }),
@@ -23,22 +21,22 @@ export function brushSizeButton(config) {
             div({class: 'o-flex--column o-width--100 o-height--100'},
                 div({class: 'o-flex--column o-margin--auto'},
                     div({class: 'c-brush-size__editing-overlay'},
-                        sizeDisplay,
-                        sizeDescription
+                        div({class: 'circle o-bkg--black o-margin--h-auto o-margin--b-20', 
+                            style: `width: ${currentSize}px; height: ${currentSize}px;`, 
+                            handle: 'sizeDisplay'}),
+                        div({class: 'hdg hdg--2', 
+                            innerText: `${currentSize}px line width`,
+                            handle: 'sizeDescription'})
                     )
                 )
             ),
             div({class: 'c-brush-size__indicator-container'},
                 div({class: 'c-brush-size__indicator'},
-                    [50, 40, 30, 20, 10, 5].map((size) => {
+                    [50, 45, 40, 35, 30, 25, 20, 15, 10, 5].map((size) => {
                         return div({class: 'circle o-bkg--black o-margin--t-auto', style: `width: ${size}px; height: ${size}px`})
                     })
                 ),
                 div({class: 'c-brush-size__indicator-line o-bkg--black'})
-            ),
-            div({class: 'c-brush-size__drag-arrows'},
-                i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' }),
-                i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' })
             )
         )
     )
@@ -53,12 +51,13 @@ export function brushSizeButton(config) {
 
     function handleClick(ev, scope) {
         console.warn('clicked!!!')
+        return false
     }
 
     function updateSize(size) {
         size = Math.round(Math.max(size, 1))
-        sizeDisplay.style =`width: ${size}px; height: ${size}px;`
-        sizeDescription.innerText = `${size}px line width`
+        E.getHandle('sizeDisplay').style =`width: ${size}px; height: ${size}px;`
+        E.getHandle('sizeDescription').innerText = `${size}px line width`
         config['@sizeSelected'](size)
     }
 

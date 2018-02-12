@@ -266,7 +266,7 @@ button {
   background-color: rgb(81, 94, 233);
 }
 .setting-btn:hover, .setting-btn:focus {
-  background-color: rgba(81, 94, 233, .85);
+  background-color: rgba(40, 52, 187, 0.85);
 }
 
 .clear-btn {

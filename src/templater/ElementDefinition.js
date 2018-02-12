@@ -7,6 +7,7 @@ const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
         obj[next] = 'handlers'
         return obj
     }, {})
+let handles = {}
 
 export class ElementDefinition {
     /**
@@ -19,6 +20,7 @@ export class ElementDefinition {
     constructor(tagName, config, children) {
         this.tagName = tagName
         this.config = config
+        handles[config.attributes.handle || config.attributes.id || 'last'] = this
         let parsedOut = Object.keys(config.attributes).reduce(parse, 
             {attrs: {class: '', style: ''}, subscriptions: {}, passThrough: {}, o: config.attributes})
         this.passThrough = parsedOut.passThrough
@@ -156,9 +158,15 @@ export class ElementDefinition {
         return offset
     }
 
-    clone() {
+    clone(handle) {
         let chs = (this.children || []).map((el) => el.clone())
-        return new ElementDefinition(this.tagName, this.config, chs)
+        let ne = new ElementDefinition(this.tagName, this.config, chs)
+        handles[handle || 'last'] = ne
+        return ne
+    }
+
+    setHandle(handle) {
+        handles[handle] = this
     }
 }
 
@@ -170,6 +178,9 @@ function getElement(elementDef, parentElement) {
 }
 
 function parse(agg, key) {
+    if (key === 'handle') {
+        return agg
+    }
     if (key.indexOf(':') === 0) {
         agg.passThrough[key.replace(':', '')] = agg.o[key]
     } else if (key.indexOf('@') === 0) {
@@ -265,8 +276,13 @@ function getBuilder(tagName) {
     }
 }
 
+ElementDefinition.getHandle = (id) => {
+    return handles[id]
+}
+
 let exportable = {
     ElementDefinition: ElementDefinition,
+    E: ElementDefinition,
     virtual: getBuilder('virtual')
 }
 

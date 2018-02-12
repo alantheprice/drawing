@@ -1,11 +1,11 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
+import { e } from '../templater/ElementDefinition'
 import modal from './modal'
 import tabLayout from './tabLayout'
 import {tab, tabs} from './tabs'
 import swatches from '../color/swatches'
 import { Color } from '../color/Color'
 
-const { div, input, button, p, label } = e
+const { div, input, button, p, label, E, ElementDefinition } = e
 const ID_MAP = {
     'red': 'r',
     'green': 'g',
@@ -21,9 +21,6 @@ let selectedColor = new Color(25, 40, 120)
  */
 export default function getColorPicker(config) {
     selectedColor.update(config[':currentColor'])
-
-    let displayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColor.getAsCssValue()}`})
-    let swatchDisplayColor = div({class: 'c-color-picker__display', style: `background-color: ${selectedColor.getAsCssValue()}`})
     let sliders = Object.keys(ID_MAP).map(getColorSliders)
 
     let cpModal = modal(
@@ -31,7 +28,11 @@ export default function getColorPicker(config) {
             tabs({},
                 tab({':title': 'swatches', ':active': true },
                     div({class: 'c-color-swatches__container'},
-                        swatchDisplayColor,
+                        div({
+                            class: 'c-color-picker__display', 
+                            style: `background-color: ${selectedColor.getAsCssValue()}`, 
+                            handle: 'swatchPickerDisplayColor'
+                        }),
                         div({class: 'c-color-swatches'},
                             swatches.map(colorSwatch)
                         )
@@ -39,7 +40,11 @@ export default function getColorPicker(config) {
                 ),
                 tab({':title': 'custom', ':active': false},
                     div({class: 'c-color-picker'},
-                        displayColor,
+                        div({
+                            class: 'c-color-picker__display', 
+                            style: `background-color: ${selectedColor.getAsCssValue()}`, 
+                            handle: 'pickerDisplayColor'
+                        }),
                         div({class: 'c-color-picker__sliders'},
                             sliders
                         )
@@ -63,7 +68,6 @@ export default function getColorPicker(config) {
             selectedColor.update(color)
             sliders.forEach((item) => {
                 item.children[1].value = selectedColor[item.children[1].id]
-                console.log(item)
             })
             showChange()
         }
@@ -71,8 +75,8 @@ export default function getColorPicker(config) {
 
     function showChange() {
         config['@colorSelected'](selectedColor.copy())
-        displayColor.style = `background-color: ${selectedColor.getAsCssValue()}`
-        swatchDisplayColor.style = `background-color: ${selectedColor.getAsCssValue()}`
+        E.getHandle('pickerDisplayColor').style = `background-color: ${selectedColor.getAsCssValue()}`
+        E.getHandle('swatchPickerDisplayColor').style = `background-color: ${selectedColor.getAsCssValue()}`
     }
 
     function getColorSliders(propName) {

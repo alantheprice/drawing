@@ -28,9 +28,9 @@ function showSettings(layouts) {
 export function controlOverlay(config) {
     let brushSettings = new Setting(startingColor, 5, 1)
     return div({class:'c-overlay-container'},
-        button({class:'btn circle setting-btn', click: () => showSettings([])},
-            i({class:'material-icons md-light md-36', innerText: 'settings'})
-        ),
+        // button({class:'btn circle setting-btn', click: () => showSettings([])},
+        //     i({class:'material-icons md-light md-36', innerText: 'settings'})
+        // ),
         div({class:'c-editing-buttons'},
             button({class: 'btn circle clear-btn', click: clear},
                 i({class: 'material-icons md-light md-36', innerText: 'delete_forever'})
