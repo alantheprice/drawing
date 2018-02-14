@@ -1,5 +1,5 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
-const { div, button } = e
+import { e } from '../templater/ElementDefinition'
+const { div, button, ElementDefinition } = e
 
 /**
  * 
@@ -28,7 +28,7 @@ function createModal(elementContent) {
                     elementContent
                 ),
                 div({class: 'c-modal__btn-container'},
-                    button({class: 'btn c-modal__btn-close', innerText: 'OK', click: () => modal.remove()})
+                    button({class: 'btn c-modal__btn-close', textContent: 'OK', click: () => modal.remove()})
                 ) 
             )
         )

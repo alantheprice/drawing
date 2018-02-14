@@ -17,12 +17,12 @@ export function dragButton(config, mainButton, ...overlayContent) {
     let containerId = Symbol('dragContainer')
 
     // div({class: 'c-brush-size__drag-arrows'},
-    //     i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' }),
-    //     i({ class: 'material-icons md-dark md-48', innerText: 'keyboard_arrow_left' })
+    //     i({ class: 'material-icons md-dark md-48', textContent: 'keyboard_arrow_left' }),
+    //     i({ class: 'material-icons md-dark md-48', textContent: 'keyboard_arrow_left' })
     // )
 
     let dragButton = mainButton.clone()
-    dragButton.addClass('o-fixed o-none')
+    dragButton.classList.add('o-fixed o-none')
 
     return div({class: 'o-relative', handle: containerId},
         mainButton,
@@ -85,7 +85,7 @@ export function dragButton(config, mainButton, ...overlayContent) {
     }
 
     function setDragging(dragging) {
-        mainButton[(dragging) ? 'addClass' : 'removeClass']('o-hide')
+        mainButton.classList[(dragging) ? 'add' : 'remove']('o-hide')
         dragButton.setActive(dragging)
         E.getHandle(dragOverlayId).setActive(dragging)
     }

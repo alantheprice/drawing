@@ -1,7 +1,10 @@
 import { renderElement } from './renderUtils.js'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT, TOUCH_EVENT_MAP } from '../eventHandling/event'
 import { ELEMENTS, EVENTS } from './constants.js'
-const DIRECT_SET_ATTRIBUTES = ['innerText', 'className', 'value']
+const DIRECT_SET_ATTRIBUTES = ['textContent', 'className', 'value', 'style']
+const MAPPED_ATTRIBUTE = {
+    class: 'className'
+}
 const VIRTUAL_ELEMENT = 'virtual'
 const ATTRIBUTE_MAP = EVENTS.reduce((obj, next) => {
         obj[next] = 'handlers'
@@ -13,27 +16,38 @@ export class ElementDefinition {
     /**
      * Creates an instance of ElementDefinition.
      * @param {string} tagName
-     * @param {{attributes: Object, innerText: string, handlers: Object}} config
+     * @param {{attributes: Object}} config
      * @param {ElementDefinition[]} [children] 
      * @memberof ElementDefinition
      */
     constructor(tagName, config, children) {
         this.tagName = tagName
         this.config = config
-        handles[config.attributes.handle || config.attributes.id || 'last'] = this
-        let parsedOut = Object.keys(config.attributes).reduce(parse, 
-            {attrs: {class: '', style: ''}, subscriptions: {}, passThrough: {}, o: config.attributes})
-        this.passThrough = parsedOut.passThrough
-        this.subscriptions = parsedOut.subscriptions
-        this.attrs = parsedOut.attrs
-        this.handlers = config.handlers
-        this.innerText = config.innerText || ''
-        define(this, 'innerText', this.innerText)
-        Object.keys(this.attrs).forEach((key) => define(this, key, this.attrs[key]))
-        Object.keys(this.passThrough).forEach((key) => {
-            define(this, key, this.passThrough[key], 
-                (val) => setPassThrough(this, key, val))
+        handles[config['handle'] || config.id || 'last'] = this
+        let parsed = Object.keys(config).reduce(parse, {
+            attrs: {}, 
+            directSetProps: {textContent: '', style: '', className: ''}, 
+            handlers: {}, 
+            subscriptions: {}, 
+            passThrough: {}, 
+            o: config
         })
+        this.subscriptions = parsed.subscriptions
+        this.handlers = parsed.handlers
+        this.classList = {add: (cn) => this.addClass(cn), remove: (cn) => this.removeClass(cn)}
+        
+        this.attrs = Object.keys(parsed.attrs).map((key) => { 
+            define(this, key, parsed.attrs[key])
+            return key
+        }, {})
+        this.directSetProps = Object.keys(parsed.directSetProps).map((key) => {
+            define(this, key, parsed.directSetProps[key])
+            return key
+        }, {})
+        this.passThrough = Object.keys(parsed.passThrough).map((key) => {
+            define(this, key, parsed.passThrough[key], (val) => setPassThrough(this, key, val))
+            return key
+        }, {})
         this.children = (!children || !children.length || !children[0]) ? null : children
     }
 
@@ -59,7 +73,9 @@ export class ElementDefinition {
             })
         }
         this.element = scope.element
-        addEventHandlers(this.handlers, this)
+        Object.keys(this.handlers).forEach((domEventName) => {
+            this.addEventListener(domEventName, this.handlers[domEventName])
+        })
         if (elementDef) {
             this.parent = elementDef
         }
@@ -73,7 +89,7 @@ export class ElementDefinition {
         }
         if (evName === CUSTOM_DRAG_EVENT) {
             addDragHandler(this, handler)
-            return
+            return  
         }
         addEvent(this, evName, handler)
     }
@@ -112,7 +128,6 @@ export class ElementDefinition {
             return
         }
         this.className = [this.className, className].join(' ')
-        this.attrs.class = this.className
     }
 
     /**
@@ -126,12 +141,10 @@ export class ElementDefinition {
             return
         }
         this.className = this.className.split(' ').filter((cn) => cn !== className).join(' ')
-        this.attrs.class = this.className
     }
 
     setActive(active) {
-        let classFunc = (active) ? 'addClass' : 'removeClass'
-        this[classFunc]('active')
+        this.classList[(active) ? 'add' : 'remove']('active')
     }
 
     remove() {
@@ -174,19 +187,26 @@ function getElement(elementDef, parentElement) {
     if (elementDef.isVirtual()) {
         return parentElement
     }
-    return renderElement(elementDef.tagName, elementDef.attrs, elementDef.innerText, parentElement)
+    return renderElement(elementDef, parentElement)
 }
 
 function parse(agg, key) {
     if (key === 'handle') {
+        // TODO: Change 'handle' to ':id'
         return agg
     }
+    // TODO: tighten this up to remove the need for the if statement.
+    let mKey = MAPPED_ATTRIBUTE[key] || key
     if (key.indexOf(':') === 0) {
         agg.passThrough[key.replace(':', '')] = agg.o[key]
     } else if (key.indexOf('@') === 0) {
         agg.subscriptions[key.replace('@', '')] = agg.o[key]
+    } else if (typeof agg.o[key] === 'function' || key === CUSTOM_DRAG_EVENT) {
+        agg.handlers[mKey] = agg.o[key]
+    } else if (DIRECT_SET_ATTRIBUTES.indexOf(mKey) > -1) {
+        agg.directSetProps[mKey] = agg.o[key]
     } else {
-        agg.attrs[key] = agg.o[key]
+        agg.attrs[mKey] = agg.o[key]
     }
     return agg
 }
@@ -197,7 +217,7 @@ function setPassThrough(obj, key, value) {
     obj[innerName] = value
     if (!obj.children) { return }
     obj.children.forEach((child) => {
-        if (child.passThrough[key]) {
+        if (typeof child.passThrough[key] !== 'undefined') {
             child.passThrough[key] = value  
         }
     })
@@ -211,37 +231,26 @@ function setPassThrough(obj, key, value) {
  * @param {function(any)} [setter]
  */
 function define(obj, key, value, setter) {
-    let mKey = (key === 'class') ? 'className' : key
-    let innerName = `_${mKey}`
+    let mKey = MAPPED_ATTRIBUTE[key] || key
     var settings = {
       set: (val) => {
-          if (obj[innerName] === val) { return }
+          if (value === val) { return }
           if (obj.element && DIRECT_SET_ATTRIBUTES.indexOf(mKey) > -1) {
             obj.element[mKey] = val + ''
           } else if (obj.element && typeof obj.attrs[key] !== 'undefined') {
             obj.element.setAttribute(key, val)
           }
-          obj[innerName] = val
+          value = val
       },
-      get: () => obj[innerName]
+      get: () => (key === 'style' && obj.element) ? obj.element.style || value : value
     }
     if (setter) {
         settings.set = setter
     }
     Object.defineProperty(obj, mKey, settings)
     obj[mKey] = value
+    return obj[mKey]
 }
-
-
-function addEventHandlers(handlers, scope) {
-    if (!handlers) { return }
-    Object.keys(handlers).map((domEventName) => {
-        return {name: domEventName, handler: handlers[domEventName]}
-    }).forEach((ev) => {
-        scope.addEventListener(ev.name, ev.handler)
-    })
-}
-
 
 /**
  * Returns a function closure for building different html elements.
@@ -258,21 +267,13 @@ function getBuilder(tagName) {
      * @returns {ElementDefinition}
      */
     return function createElementDefinition(attributes, ...children) {
-        let config = Object.keys(attributes).reduce((obj, next) => {
-            if (next === 'innerText') {
-                obj.innerText = attributes[next]
-                return obj
-            }
-            let name = ATTRIBUTE_MAP[next] || 'attributes'
-            obj[name][next] = attributes[next]
-            return obj
-        }, {attributes: {}, handlers: {}})
-        let childs = children || []
+        if (typeof children[0] === 'string') {
+            attributes.textContent = children[0]
+            children = children.slice(1)
+        }        
         // if the first element is an array, it was passed in as an array instead of arguments
-        if (Array.isArray(childs[0])) {
-            childs = childs[0]
-        }
-        return new ElementDefinition(tagName, config, childs)
+        children = Array.isArray(children[0]) ?  children[0] : children
+        return new ElementDefinition(tagName, attributes, children)
     }
 }
 

@@ -64,7 +64,7 @@ export function tabs(config, ...tabs) {
 function getButton(tab, index, setTab) {
     return button({
         class: `c-tab-layout__button${(tab.active)? ' active' : ''}`,
-        innerText: tab.title,
+        textContent: tab.title,
         click: setTab(index)
     })
 }

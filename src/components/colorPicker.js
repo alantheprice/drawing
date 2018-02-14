@@ -85,7 +85,7 @@ export default function getColorPicker(config) {
         let step = (propName === 'opacity') ? .01 : 1
         // this really should be it's own component.
         return div({class: 'c-color-picker__option'},
-            label({class: 'c-color-picker__range-label', innerText: propName}),
+            label({class: 'c-color-picker__range-label', textContent: propName}),
             input({class: 'c-color-picker__range', type: 'range', min: 0, max: max, step: step, id: key, value: selectedColor[key], input: valueChanged(key)})
         )
     }

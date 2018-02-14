@@ -3,22 +3,26 @@
  * renders an htmlElement
  * 
  * @export
- * @param {string} tagName 
- * @param {Object} [attributes]
- * @param {string} [innerText]
+ * @param {{tagName: string, attrs: string[], directSetProps: string[]}} elementDef
  * @param {HTMLElement} [parentElement] 
  * @returns {HTMLElement}
  */
-export function renderElement(tagName, attributes, innerText, parentElement) {
-    let elem = create(tagName)
-    if (attributes) {
-        Object.keys(attributes).map((attName) => {
-            return {name: attName, val: attributes[attName]}
-        }).forEach((att) => {
-            elem.setAttribute(att.name, att.val)
+export function renderElement(elementDef, parentElement) {
+    let elem = create(elementDef.tagName);
+    // debugger
+    (elementDef.attrs || [])
+    .filter((key) => elementDef[key])
+        .forEach((attName) => {
+            elem.setAttribute(attName, elementDef[attName])
+        });
+    (elementDef.directSetProps || [])
+        .filter((key) => {
+            // debugger
+            return elementDef[key]
         })
-    }
-    elem.innerText = innerText
+        .forEach((attName) => {
+            elem[attName] = elementDef[attName]
+        })
     if (parentElement) {
         parentElement.appendChild(elem)
     }
