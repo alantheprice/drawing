@@ -60,7 +60,6 @@ function getTabLayout(tab) {
 function getButton(tab, index, setTab) {
     return button({
         class: `c-tab-layout__button${(tab.active)? ' active' : ''}`,
-        textContent: tab.title,
         click: setTab(index)
-    })
+    }, tab.title)
 }

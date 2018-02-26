@@ -16,7 +16,7 @@ export class ElementDefinition {
     /**
      * Creates an instance of ElementDefinition.
      * @param {string} tagName
-     * @param {{attributes: Object}} config
+     * @param {{[x: string]: any}} config
      * @param {ElementDefinition[]} [children] 
      * @memberof ElementDefinition
      */
@@ -24,30 +24,19 @@ export class ElementDefinition {
         this.tagName = tagName
         this.config = config
         handles[config['handle'] || config.id || 'last'] = this
-        let parsed = Object.keys(config).reduce(parse, {
-            attrs: {}, 
-            directSetProps: {textContent: '', style: '', className: ''}, 
-            handlers: {}, 
-            subscriptions: {}, 
-            passThrough: {}, 
-            o: config
-        })
+        let parsed = Object.keys(config).reduce(parse, getElementDefaults(config))
         this.subscriptions = parsed.subscriptions
         this.handlers = parsed.handlers
         this.classList = {add: (cn) => this.addClass(cn), remove: (cn) => this.removeClass(cn)}
-        
-        this.attrs = Object.keys(parsed.attrs).map((key) => { 
-            define(this, key, parsed.attrs[key])
-            return key
-        }, {})
-        this.directSetProps = Object.keys(parsed.directSetProps).map((key) => {
-            define(this, key, parsed.directSetProps[key])
-            return key
-        }, {})
-        this.passThrough = Object.keys(parsed.passThrough).map((key) => {
+        this.attrs = Object.keys(parsed.attrs)
+        this.directSetProps = Object.keys(parsed.directSetProps)
+        this.passThrough = Object.keys(parsed.passThrough)
+
+        this.attrs.forEach((key) => define(this, key, parsed.attrs[key]))
+        this.directSetProps.forEach((key) => define(this, key, parsed.directSetProps[key]))
+        this.passThrough.forEach((key) => {
             define(this, key, parsed.passThrough[key], (val) => setPassThrough(this, key, val))
-            return key
-        }, {})
+        })
         this.children = (!children || !children.length || !children[0]) ? null : children
     }
 
@@ -267,13 +256,27 @@ function getBuilder(tagName) {
      * @returns {ElementDefinition}
      */
     return function createElementDefinition(attributes, ...children) {
-        if (typeof children[0] === 'string') {
+        attributes = attributes || {}
+        if (typeof attributes === 'string') {
+            attributes = {textContent: attributes}
+        } else if (typeof children[0] === 'string') {
             attributes.textContent = children[0]
             children = children.slice(1)
         }        
         // if the first element is an array, it was passed in as an array instead of arguments
         children = Array.isArray(children[0]) ?  children[0] : children
-        return new ElementDefinition(tagName, attributes, children)
+        return new ElementDefinition(tagName, attributes, children)    
+    }
+}
+
+function getElementDefaults(config) {
+    return { 
+        attrs: {}, 
+        directSetProps: {textContent: '', style: '', className: ''}, 
+        handlers: {}, 
+        subscriptions: {}, 
+        passThrough: {},
+        o: config
     }
 }
 

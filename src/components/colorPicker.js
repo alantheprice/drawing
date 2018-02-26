@@ -75,8 +75,8 @@ export default function getColorPicker(config) {
 
     function showChange() {
         config['@colorSelected'](selectedColor.copy())
-        E.getHandle('pickerDisplayColor').style = `background-color: ${selectedColor.getAsCssValue()}`
-        E.getHandle('swatchPickerDisplayColor').style = `background-color: ${selectedColor.getAsCssValue()}`
+        E.getHandle('pickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
+        E.getHandle('swatchPickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
     }
 
     function getColorSliders(propName) {
@@ -85,7 +85,7 @@ export default function getColorPicker(config) {
         let step = (propName === 'opacity') ? .01 : 1
         // this really should be it's own component.
         return div({class: 'c-color-picker__option'},
-            label({class: 'c-color-picker__range-label', textContent: propName}),
+            label({class: 'c-color-picker__range-label'}, propName),
             input({class: 'c-color-picker__range', type: 'range', min: 0, max: max, step: step, id: key, value: selectedColor[key], input: valueChanged(key)})
         )
     }

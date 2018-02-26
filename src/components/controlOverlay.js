@@ -33,10 +33,10 @@ export function controlOverlay(config) {
         // ),
         div({class:'c-editing-buttons'},
             button({class: 'btn circle clear-btn', click: clear},
-                i({class: 'material-icons md-light md-36', textContent: 'delete_forever'})
+                i({class: 'material-icons md-light md-36'}, 'delete_forever')
             ),
             button({class:'btn circle undo-btn', click: undo},
-                i({class:'material-icons md-light md-36', textContent: 'undo'})
+                i({class:'material-icons md-light md-36'}, 'undo')
             ),
             brushControl({'@updateSettings': updateSettings, ':currentSettings': brushSettings})
         )
