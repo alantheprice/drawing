@@ -33,7 +33,7 @@ button {
 .btn {
   border-radius: 5px;
   pointer-events: all;
-  font-size: 20px;
+  font-size: 24px;
   padding: 7px 20px;
   border: solid 1px rgba(120,120,120, .3);
   box-shadow: 3px 3px 10px 3px rgba(164, 164, 165, 0.3);
@@ -45,9 +45,9 @@ button {
 }
 
 .btn.circle {
-  /* border-radius: 50%; */
-  width: 60px;
-  height: 60px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   padding: 7px 5px 5px 5px;
 }
 
