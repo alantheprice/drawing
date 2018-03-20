@@ -1,12 +1,13 @@
 import { e, ElementDefinition } from './templater/ElementDefinition'
 import { controlOverlay } from './components/controlOverlay'
-const {div, button, i } = e
+import u from './utils'
+const { div, button, i } = e
 
 // initialize drawing
 setup()
 
 function setup() {
-  controlOverlay().render(document.body)
+  controlOverlay().render(u.$('#app'))
   addServiceWorker()
 }
 

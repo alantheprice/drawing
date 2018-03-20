@@ -5,30 +5,30 @@ export const TOUCH_EVENT_MAP = {
   mousemove: 'touchmove'
 }
 
-export const CUSTOM_DRAG_EVENT = 'customDragEvent'
+export const CUSTOM_DRAG_EVENT = 'oncustomdrag'
 
 /**
  * 
  * 
  * @export
- * @param {{element: HTMLElement}} elementDef
+ * @param {{element: HTMLElement}} context
  * @param {{start: function(Event, {element: HTMLElement}, {x: number, y: number}), move: function(Event, {element: HTMLElement}, {x: number, y: number}), finish: function(Event, {element: HTMLElement}, {x: number, y: number})}} handler
  */
-export function addDragHandler(elementDef, handler) {
-  addEvent(elementDef, 'mousedown', (ev, elem, xy) => {
-    handler.start(ev, elementDef, xy)
+export function addDragHandler(context, handler) {
+  addEvent(context, 'mousedown', (ev, elem, xy) => {
+    handler.start.call(context, ev, context, xy)
     let finishTimeout = null
     let _finish = (endEv, elem, endXY) => {
       clearTimeout(finishTimeout)
-      handler.finish(endEv, elem, endXY)
+      handler.finish.call(context, endEv, elem, endXY)
       removeMoveEvent()
       removeStopEvent()
     }
 
-    let removeStopEvent = addEvent(elementDef, 'mouseup', _finish)
-    let removeMoveEvent = addEvent(elementDef,  'mousemove', (mEV, elem, mXY) => {
+    let removeStopEvent = addEvent(context, 'mouseup', _finish)
+    let removeMoveEvent = addEvent(context,  'mousemove', (mEV, elem, mXY) => {
       clearTimeout(finishTimeout)
-      handler.move(mEV, elem, mXY)
+      handler.move.call(context, mEV, elem, mXY)
       finishTimeout = setTimeout(() => {
         _finish(mEV, elem, mXY)
       }, 500)
@@ -40,27 +40,27 @@ export function addDragHandler(elementDef, handler) {
  * 
  * 
  * @export
- * @param {{element: HTMLElement}} elementDef
+ * @param {{element: HTMLElement}} context
  * @param {string} eventName 
  * @param {function(Event, {element: HTMLElement}, {x: number, y: number})} handler 
  * @returns {function()} remove
  */
-export function addEvent(elementDef, eventName, handler) {
+export function addEvent(context, eventName, handler) {
   let handle = (ev) => {
     ev.preventDefault()
-    handler(ev, elementDef, getXY(ev))
+    handler.call(context, ev, context, getXY(ev))
   }
-  elementDef.element.addEventListener(eventName, handle)
+  context.element.addEventListener(eventName, handle)
   if (!TOUCH_EVENT_MAP[eventName] || TOUCH_EVENT_MAP[eventName] === eventName) {
     return function remove() {
-      elementDef.element.removeEventListener(eventName, handle)
+      context.element.removeEventListener(eventName, handle)
     }
   }
-  elementDef.element.addEventListener(TOUCH_EVENT_MAP[eventName], handle)
+  context.element.addEventListener(TOUCH_EVENT_MAP[eventName], handle)
 
   return function remove() {
-    elementDef.element.removeEventListener(eventName, handle)
-    elementDef.element.removeEventListener(TOUCH_EVENT_MAP[eventName], handle)
+    context.element.removeEventListener(eventName, handle)
+    context.element.removeEventListener(TOUCH_EVENT_MAP[eventName], handle)
   }
 }
 

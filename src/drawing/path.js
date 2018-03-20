@@ -3,7 +3,6 @@ import { Setting } from '../settings/Setting'
 import { Color } from '../color/Color'
 const store = new LocalStore()
 
-
 export class Path {
 
   constructor(canvas, context, clear) {
@@ -30,6 +29,7 @@ export class Path {
    * @memberof Path
    */
   updateSettings(nameValueSetting) {
+    debugger
     this.settings = Object.assign(this.settings, nameValueSetting)
     if (nameValueSetting.color && nameValueSetting.color.a !== 1) {
       this.settings.opacity = nameValueSetting.color.a
@@ -59,8 +59,9 @@ export class Path {
       }
     }
   }
+
   /**
-   * 
+   * Draw Line
    * 
    * @param {any} points 
    * @param {Setting} settings 
@@ -79,6 +80,7 @@ export class Path {
     this.ctx.lineWidth = settings.lineWidth
     this.ctx.lineCap = 'round'
     this.ctx.strokeStyle = settings.color.getAsCssValue()
+    // debugger
     this.ctx.stroke()
   }
 
@@ -106,7 +108,8 @@ export class Path {
       return
     }
     paths.forEach((pathDef) => {
-      this.drawLine(pathDef.path, pathDef.settings)
+      let settings = Setting.fromObject(pathDef.settings)
+      this.drawLine(pathDef.path, settings)
     })
     this.paths = paths
   }

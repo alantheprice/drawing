@@ -1,6 +1,7 @@
-import { e } from '../templater/ElementDefinition'
+import { e } from '../templater/renderer'
 import { dragButton } from './dragButton'
-const { button, i, div, E, ElementDefinition } = e
+const { button, i, div } = e.elements
+const getHandle = e.getHandle
 
 /**
  * Brush Size Button selector component
@@ -10,23 +11,28 @@ const { button, i, div, E, ElementDefinition } = e
  * @returns 
  */
 export function brushSizeButton(config) {
-    let currentSize = config[':currentSize']
     
-    return dragButton({'@move': handleMove, '@click': handleClick},
+    return dragButton({e_onMove: handleMove, e_onclick: handleClick, _updateSize: updateSize},
         button({class: 'btn circle brush-size-btn o-flex'},
-            i({ class: 'material-icons md-light md-18', textContent: 'brush' }),
-            i({ class: 'material-icons md-light md-36', textContent: 'brush' }),
+            i({ class: 'material-icons md-light md-18'}, 'brush'),
+            i({ class: 'material-icons md-light md-36'}, 'brush'),
         ),
         div({class: 'o-width--100 o-height--100 o-relative'}, 
             div({class: 'o-flex--column o-width--100 o-height--100'},
                 div({class: 'o-flex--column o-margin--auto'},
                     div({class: 'c-brush-size__editing-overlay'},
-                        div({class: 'circle o-bkg--black o-margin--h-auto o-margin--b-20', 
-                            style: `width: ${currentSize}px; height: ${currentSize}px;`, 
-                            handle: 'sizeDisplay'}),
-                        div({class: 'hdg hdg--2', 
-                            textContent: `${currentSize}px line width`,
-                            handle: 'sizeDescription'})
+                        div({
+                            class: 'circle o-bkg--black o-margin--h-auto o-margin--b-20', 
+                            v_size: 1,
+                            set_size: function(newSize) { this.style = `width: ${newSize}px; height: ${newSize}px;` },
+                            style: '',
+                            handle: 'sizeDisplay'
+                        }),
+                        div({
+                            class: 'hdg hdg--2',
+                            v_size: 1,
+                            set_size: function(newSize) { this.textContent = `${newSize}px line width` },
+                        }, '')
                     )
                 )
             ),
@@ -41,24 +47,25 @@ export function brushSizeButton(config) {
         )
     )
 
-    function handleMove(ev, moveX) {
-        let width = window.innerWidth - 150
-        let multiplier = width / 50
-        if (moveX > width) { return }
-        let brushSize = (width - moveX) / multiplier
-        updateSize(brushSize)
-    }
+}
 
-    function handleClick(ev, scope) {
-        console.warn('clicked!!!')
-        return false
-    }
+function handleMove(ev, moveX) {
+    let width = window.innerWidth - 150
+    let multiplier = width / 50
+    if (moveX > width) { return }
+    let brushSize = (width - moveX) / multiplier
+    this._updateSize(brushSize)
+}
 
-    function updateSize(size) {
-        size = Math.round(Math.max(size, 1))
-        E.getHandle('sizeDisplay').style =`width: ${size}px; height: ${size}px;`
-        E.getHandle('sizeDescription').textContent = `${size}px line width`
-        config['@sizeSelected'](size)
-    }
+function handleClick(ev, elem) {
+    console.warn('clicked!!!')
+    return false
+}
 
+function updateSize(size) {
+    size = Math.round(Math.max(size, 1))
+    // getHandle('sizeDisplay').style =`width: ${size}px; height: ${size}px;`
+    // getHandle('sizeDescription').textContent = `${size}px line width`
+    this.emit('updateSize', size)
+    // config.v_sizeSelected(size)
 }

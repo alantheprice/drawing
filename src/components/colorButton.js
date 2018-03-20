@@ -1,37 +1,43 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
+import { e } from '../templater/renderer'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
 import colorPicker from './colorPicker'
 import { Color } from '../color/Color'
-const { div, button, i } = e
-
+const { button, i, div } = e.elements
+const getHandle = e.getHandle
 /**
  * Color Button component
  * Handles setting color
  * 
  * @export
- * @param {{'@colorSelected': function(Color), ':currentColor': Color}} config
  * @returns {ElementDefinition}
  */
-export function colorButton(config) {
-    let currentColor = config[':currentColor']
-    config = Object.assign(config, { class: 'btn circle custom-color-btn', click: openColorPicker, style: 'background-color: rgb(40,40,40)' })
-    let colorBtn = button(config,
-        i({ class: 'material-icons md-light md-36', textContent: 'brush' })
+export function colorButton() {
+    return button({
+            class: 'btn circle custom-color-btn', 
+            onclick: function (ev, elem) {
+                // Tying these two disparate components together
+                openColorPicker(this.v_color, (newColor) => {
+                    this.emit('updateColor', newColor)
+                })
+            },
+            v_color: null,
+            set_color: setBackground,
+            style: 'background-color: rgb(40,40,40)' 
+        },
+        i({ class: 'material-icons md-light md-36'}, 'brush')
     )
 
-    return colorBtn
-
-    /**
-     * 
-     * 
-     * @param {Color} color 
-     */
-    function updateColor(color) {
-        colorBtn.style.backgroundColor = `${color.getAsCssValue()}`
-        colorBtn.emit('colorSelected', color)
-    }
-
-    function openColorPicker() {
-        colorPicker({'@colorSelected': updateColor, ':currentColor': currentColor})
-    }
 }
+
+function setBackground() {
+    this.style.backgroundColor = `${this.v_color.getAsCssValue()}`
+}
+
+function openColorPicker(currentColor, updateColor) {
+    colorPicker({e_colorSelected: function (color) {
+        this.v_color = color
+        updateColor(color)
+    }, v_color: currentColor})
+}
+
+

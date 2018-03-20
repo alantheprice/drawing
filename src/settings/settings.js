@@ -1,6 +1,7 @@
-import { e, ElementDefinition } from '../templater/ElementDefinition'
+import { e } from '../templater/renderer'
+
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
-const { div, button, i } = e
+const { div, button, i } = e.elements
 
 const DEFAULT_STARTING_COLOR = {
   r: 40,

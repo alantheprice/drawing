@@ -26,3 +26,7 @@ export class Setting {
         return new Setting(this.color.copy(), this.lineWidth, this.opacity)
     }
 }
+
+Setting.fromObject = function fromObject (settings) {
+    return new Setting(Color.fromObject(settings.color), settings.lineWidth || 5)
+}

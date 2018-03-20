@@ -1,11 +1,13 @@
-import { e } from '../templater/ElementDefinition'
+import { e } from '../templater/renderer'
 import modal from './modal'
 import tabLayout from './tabLayout'
 import {tab, tabs} from './tabs'
 import swatches from '../color/swatches'
 import { Color } from '../color/Color'
 
-const { div, input, button, p, label, E, ElementDefinition } = e
+const { div, input, button, p, label } = e.elements
+const getHandle = e.getHandle
+
 const ID_MAP = {
     'red': 'r',
     'green': 'g',
@@ -19,7 +21,7 @@ let selectedColor = new Color(25, 40, 120)
  * @param {{'@colorSelected': function(Color), ':currentColor': Color}} config
  * @returns {ElementDefinition}
  */
-export default function getColorPicker(config) {
+export function colorPicker(config) {
     selectedColor.update(config[':currentColor'])
     let sliders = Object.keys(ID_MAP).map(getColorSliders)
 
@@ -75,8 +77,8 @@ export default function getColorPicker(config) {
 
     function showChange() {
         config['@colorSelected'](selectedColor.copy())
-        E.getHandle('pickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
-        E.getHandle('swatchPickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
+        getHandle('pickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
+        getHandle('swatchPickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
     }
 
     function getColorSliders(propName) {

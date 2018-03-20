@@ -1,5 +1,6 @@
-import { e } from '../templater/ElementDefinition'
-const { div, button, ElementDefinition } = e
+import { e } from '../templater/renderer'
+
+const { div, button } = e.elements
 
 /**
  * 

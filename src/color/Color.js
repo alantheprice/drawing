@@ -10,10 +10,10 @@ export class Color {
      * @memberof Color
      */
     constructor(r,g,b,a) {
-        this.r = r
-        this.g = g
-        this.b = b
-        this.a = a || 1
+        this.r = Math.round(r)
+        this.g = Math.round(g)
+        this.b = Math.round(b)
+        this.a = (isNaN(a)) ? 1 : a
     }
 
     /**
@@ -23,8 +23,10 @@ export class Color {
      * @memberof Color
      */
     setOpacity(opacity) {
-        this.a = Math.min(opacity, 1)
+        let op = isNaN(opacity) ? 1 : opacity
+        this.a = Math.min(op, 1)
     }
+
     /**
      * 
      * 
@@ -32,10 +34,10 @@ export class Color {
      * @memberof Color
      */
     update(colorConfig) {
-        this.r = colorConfig.r || this.r
-        this.g = colorConfig.g || this.g
-        this.b = colorConfig.b || this.b
-        this.a = colorConfig.a || colorConfig.a
+        this.r = Math.round(colorConfig.r || this.r)
+        this.g = Math.round(colorConfig.g || this.g)
+        this.b = Math.round(colorConfig.b || this.b)
+        this.a = isNaN(colorConfig.a) ? 1 : this.a
     }
 
     getAsCssValue() {
@@ -51,4 +53,11 @@ export class Color {
     copy() {
         return Object.assign(Color.prototype, this)
     }
+}
+var template = new Color(1,1,1)
+
+Color.fromObject = function fromObject(color) {
+    let proto = template.copy()
+    proto.update(color)
+    return proto
 }

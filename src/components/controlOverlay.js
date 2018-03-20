@@ -1,12 +1,14 @@
 import { init, clear, undo, updateSettings } from '../drawing/drawing'
-import { e, ElementDefinition } from '../templater/ElementDefinition'
+import { e } from '../templater/renderer'
 import { colorButton } from './colorButton'
 import { brushControl } from './brushControl'
 import { Setting } from '../settings/Setting'
 import { Color } from '../color/Color'
-// import { getBrushLayout, getColorLayout, subscribe, SETTING_EVENTS} from './settings/settings'
+
+const { button, i, div } = e.elements
+const getHandle = e.getHandle
+
 let settingsShowing = false
-const {div, button, i } = e
 let startingColor = new Color(40,40,40, 1)
 
 // initialize drawing
@@ -18,7 +20,6 @@ function showSettings(layouts) {
   console.log('settings-clicked')
 }
 
-
 /**
  * 
  * 
@@ -26,19 +27,40 @@ function showSettings(layouts) {
  * @returns {ElementDefinition}
  */
 export function controlOverlay(config) {
-    let brushSettings = new Setting(startingColor, 5, 1)
-    return div({class:'c-overlay-container'},
+    return div({class:'c-overlay-container', 
+                v_settings: new Setting(startingColor, 5, 1), 
+                set_settings: settingsChanged,
+                v_color: startingColor,
+                v_size: 5,
+                e_updateColor: colorChanged,
+                e_updateSize: sizeChanged
+            },
         // button({class:'btn circle setting-btn', click: () => showSettings([])},
         //     i({class:'material-icons md-light md-36', textContent: 'settings'})
         // ),
         div({class:'c-editing-buttons'},
-            button({class: 'btn circle clear-btn', click: clear},
+            button({class: 'btn circle clear-btn', onclick: clear},
                 i({class: 'material-icons md-light md-36'}, 'delete_forever')
             ),
-            button({class:'btn circle undo-btn', click: undo},
+            button({class:'btn circle undo-btn', onclick: undo},
                 i({class:'material-icons md-light md-36'}, 'undo')
             ),
-            brushControl({'@updateSettings': updateSettings, ':currentSettings': brushSettings})
+            brushControl()
         )
     )
+}
+
+function settingsChanged(newSetting) {
+    this.v_settings = newSetting
+    updateSettings(newSetting)
+}
+
+function colorChanged(newColor) {
+    this.v_color = newColor
+    this.v_settings = new Setting(newColor, this.v_settings.lineWidth)
+}
+
+function sizeChanged(lineWidth) {
+    this.v_size = lineWidth
+    this.v_settings = new Setting(this.v_settings.color, lineWidth)
 }
