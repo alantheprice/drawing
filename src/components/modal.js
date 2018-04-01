@@ -10,29 +10,22 @@ const { div, button } = e.elements
  * @returns {ElementDefinition}
  */
 export default function (element) {
-    let modal = createModal(element)
-    modal.render(document.body)
-    return modal
-}
-
-/**
- * Create a modal with 
- * 
- * @param {ElementDefinition} elementContent 
- * @returns 
- */
-function createModal(elementContent) {
-    let modal = div({class:'c-modal'},
+    return div({
+            class:'c-modal', 
+                e_onremove: function() {
+                this.remove()
+            }
+        },
         div({class: 'c-modal__overlay o-flex'},
             div({class: 'c-modal__inner-container'},
                 div({class: 'c-modal__content'},
-                    elementContent
+                    element
                 ),
                 div({class: 'c-modal__btn-container'},
-                    button({class: 'btn c-modal__btn-close', textContent: 'OK', click: () => modal.remove()})
+                    button({class: 'btn c-modal__btn-close', onclick: function() { this.emit('onremove') }}, 'OK')
                 ) 
             )
         )
-    )
-    return modal
+    ).render(document.body)
+    // return modal
 }

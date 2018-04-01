@@ -1,6 +1,6 @@
 import { e } from '../templater/renderer'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT} from '../eventHandling/event'
-import colorPicker from './colorPicker'
+import { colorPicker } from './colorPicker'
 import { Color } from '../color/Color'
 const { button, i, div } = e.elements
 const getHandle = e.getHandle
@@ -34,10 +34,10 @@ function setBackground() {
 }
 
 function openColorPicker(currentColor, updateColor) {
-    colorPicker({e_colorSelected: function (color) {
+    colorPicker({colorSelected: function (color) {
         this.v_color = color
         updateColor(color)
-    }, v_color: currentColor})
+    }, currentColor: currentColor})
 }
 
 

@@ -54,10 +54,9 @@ export class Color {
         return Object.assign(Color.prototype, this)
     }
 }
-var template = new Color(1,1,1)
 
 Color.fromObject = function fromObject(color) {
-    let proto = template.copy()
+    let proto = new Color(1,1,1)
     proto.update(color)
     return proto
 }

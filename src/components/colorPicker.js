@@ -1,6 +1,5 @@
 import { e } from '../templater/renderer'
 import modal from './modal'
-import tabLayout from './tabLayout'
 import {tab, tabs} from './tabs'
 import swatches from '../color/swatches'
 import { Color } from '../color/Color'
@@ -12,43 +11,52 @@ const ID_MAP = {
     'red': 'r',
     'green': 'g',
     'blue': 'b',
-    'opacity': 'a'
+    // 'opacity': 'a'
 }
-let selectedColor = new Color(25, 40, 120)
 
 /**
  * @export
- * @param {{'@colorSelected': function(Color), ':currentColor': Color}} config
+ * @param {{ colorSelected: function(Color), currentColor: Color}} config
  * @returns {ElementDefinition}
  */
 export function colorPicker(config) {
-    selectedColor.update(config[':currentColor'])
-    let sliders = Object.keys(ID_MAP).map(getColorSliders)
-
-    let cpModal = modal(
-        div({class: 'c-color-picker__tabs'},
+    return modal(
+        div({
+                class: 'c-color-picker__tabs', 
+                v_color: config.currentColor, 
+                e_onColorChanged: function(color) {
+                    this.v_color = color
+                    config.colorSelected(color)
+                }
+            },
             tabs({},
-                tab({':title': 'swatches', ':active': true },
+                tab({title: 'swatches', active: true },
                     div({class: 'c-color-swatches__container'},
                         div({
                             class: 'c-color-picker__display', 
-                            style: `background-color: ${selectedColor.getAsCssValue()}`, 
-                            handle: 'swatchPickerDisplayColor'
+                            style: '',
+                            v_color: null,
+                            set_color: function(color) {
+                                this.style = `background-color: ${this.v_color.getAsCssValue()}`
+                            }
                         }),
                         div({class: 'c-color-swatches'},
                             swatches.map(colorSwatch)
                         )
                     )
                 ),
-                tab({':title': 'custom', ':active': false},
+                tab({title: 'custom', active: false},
                     div({class: 'c-color-picker'},
                         div({
-                            class: 'c-color-picker__display', 
-                            style: `background-color: ${selectedColor.getAsCssValue()}`, 
-                            handle: 'pickerDisplayColor'
+                            class: 'c-color-picker__display',  
+                            style: '',
+                            v_color: null,
+                            set_color: function(color) {
+                                this.style = `background-color: ${this.v_color.getAsCssValue()}`
+                            }
                         }),
                         div({class: 'c-color-picker__sliders'},
-                            sliders
+                            Object.keys(ID_MAP).map(getColorSliders)
                         )
                     )
                 )
@@ -56,39 +64,26 @@ export function colorPicker(config) {
         )
     )
 
-    return cpModal
-        
-    function valueChanged(id) {
-        return (ev) => {
-            selectedColor[ev.target.id] = ev.target.value
-            showChange()
-        }
-    }
-
-    function setColor(color) {
-        return (ev) => {
-            selectedColor.update(color)
-            sliders.forEach((item) => {
-                item.children[1].value = selectedColor[item.children[1].id]
-            })
-            showChange()
-        }
-    }
-
-    function showChange() {
-        config['@colorSelected'](selectedColor.copy())
-        getHandle('pickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
-        getHandle('swatchPickerDisplayColor').style.backgroundColor = selectedColor.getAsCssValue()
-    }
-
     function getColorSliders(propName) {
         let key = ID_MAP[propName]
         let max = (propName === 'opacity') ? 1 : 256
         let step = (propName === 'opacity') ? .01 : 1
-        // this really should be it's own component.
         return div({class: 'c-color-picker__option'},
             label({class: 'c-color-picker__range-label'}, propName),
-            input({class: 'c-color-picker__range', type: 'range', min: 0, max: max, step: step, id: key, value: selectedColor[key], input: valueChanged(key)})
+            input({
+                class: 'c-color-picker__range', 
+                type: 'range', 
+                min: 0, 
+                max: max, 
+                step: step,
+                id: key,
+                v_color: null,
+                set_color: function(color) {
+                    this.value = color[key]
+                },
+                value: '', 
+                oninput: rangeValueChanged(key)
+            })
         )
     }
 
@@ -98,11 +93,26 @@ export function colorPicker(config) {
      * @returns {ElementDefinition}
      */
     function colorSwatch(color) {
-        let c = new Color(color.r, color.g, color.b, 1)
+        let c = Color.fromObject(color)
         return button({
             class: 'btn circle', 
-            click: setColor(c),
+            v_color: null,
+            onclick: setColor(c),
             style: `background-color: ${c.getAsCssValue()};`
         })
+    }
+}
+
+function setColor(color) {
+    return function(ev) {
+        this.emit('onColorChanged', color)
+    }
+}
+
+function rangeValueChanged(id) {
+    return function(ev) {
+        this.value = Number(ev.target.value)
+        let color = Color.fromObject(Object.assign({} , this.v_color, {[id]: this.value}))
+        this.emit('onColorChanged', color)
     }
 }

@@ -21,19 +21,27 @@ export function dragButton(config, mainButton, ...overlayContent) {
     mainButton.setAttribute('set_dragging', function(dragging) {
         this[(dragging) ? 'addClass' : 'removeClass']('o-hide')
     })
+    config = Object.assign(config, {class: 'o-relative', v_dragging: false, e_dragging: setDragging })
 
-    return div({class: 'o-relative', v_dragging: false, e_dragging: setDragging },
+    return div(config,
         mainButton,
-        div({class: 'c-drag-overlay', oncustomdrag: getDragHandler(mainButton) },
+        div({
+            class: 'c-drag-overlay', 
+            oncustomdrag: getDragHandler(mainButton), 
+            v_dragging: false,
+            set_dragging: function(dragging) { this.setActive(dragging) } 
+        },
             overlayContent
         ),
-        mainButton.clone('dragbutton', { onRender: function() {
-            this.addClass('o-fixed o-none')
-            this.setAttribute('style', '')
-            this.setAttribute('set_dragging', function(dragging) {
-                this.setActive(dragging)
-            })
-        }})
+        mainButton.clone('dragbutton', { 
+            onRender: function() {
+                this.addClass('o-fixed o-none')
+                this.setAttribute('style', '')
+                this.setAttribute('set_dragging', function(dragging) {
+                    this.setActive(dragging)
+                })
+            }
+        })
     )
 }
 
@@ -81,22 +89,6 @@ function getDragHandler(mainButton) {
     }
     return eventHandles
 }
-
-    // /**
-    //  * 
-    //  * 
-    //  * @param {any} ev 
-    //  */
-    // function triggerClick(ev) {
-
-    //     config['@click'](ev, mainButton)
-    // }
-
-    // function setDragging(dragging) {
-    //     mainButton[(dragging) ? 'addClass' : 'removeClass']('o-hide')
-    //     dragButton.setActive(dragging)
-    //     getHandle(dragOverlayId).setActive(dragging)
-    // }
 
 function setDragging(dragging) {
     this.v_dragging = dragging

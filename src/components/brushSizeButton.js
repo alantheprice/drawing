@@ -50,6 +50,7 @@ export function brushSizeButton(config) {
 }
 
 function handleMove(ev, moveX) {
+    console.log('handlingMove')
     let width = window.innerWidth - 150
     let multiplier = width / 50
     if (moveX > width) { return }
