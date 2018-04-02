@@ -10,10 +10,15 @@ export class Setting {
      * @memberof Color
      */
     constructor(color, lineWidth, opacity) {
+        if (isNaN(opacity)) {
+            opacity = color.a || 1
+        }
         this.color = color
         this.lineWidth = lineWidth
         this.opacity = opacity
-        this.color.setOpacity(opacity)
+        if (!isNaN(opacity)) {
+            this.color.setOpacity(opacity)
+        }
     }
 
     /**

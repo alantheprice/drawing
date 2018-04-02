@@ -11,7 +11,7 @@ const ID_MAP = {
     'red': 'r',
     'green': 'g',
     'blue': 'b',
-    // 'opacity': 'a'
+    'opacity': 'a'
 }
 
 /**
@@ -32,14 +32,7 @@ export function colorPicker(config) {
             tabs({},
                 tab({title: 'swatches', active: true },
                     div({class: 'c-color-swatches__container'},
-                        div({
-                            class: 'c-color-picker__display', 
-                            style: '',
-                            v_color: null,
-                            set_color: function(color) {
-                                this.style = `background-color: ${this.v_color.getAsCssValue()}`
-                            }
-                        }),
+                        colorPickerDisplay(),
                         div({class: 'c-color-swatches'},
                             swatches.map(colorSwatch)
                         )
@@ -47,14 +40,7 @@ export function colorPicker(config) {
                 ),
                 tab({title: 'custom', active: false},
                     div({class: 'c-color-picker'},
-                        div({
-                            class: 'c-color-picker__display',  
-                            style: '',
-                            v_color: null,
-                            set_color: function(color) {
-                                this.style = `background-color: ${this.v_color.getAsCssValue()}`
-                            }
-                        }),
+                        colorPickerDisplay(),
                         div({class: 'c-color-picker__sliders'},
                             Object.keys(ID_MAP).map(getColorSliders)
                         )
@@ -63,45 +49,53 @@ export function colorPicker(config) {
             )
         )
     )
-
-    function getColorSliders(propName) {
-        let key = ID_MAP[propName]
-        let max = (propName === 'opacity') ? 1 : 256
-        let step = (propName === 'opacity') ? .01 : 1
-        return div({class: 'c-color-picker__option'},
-            label({class: 'c-color-picker__range-label'}, propName),
-            input({
-                class: 'c-color-picker__range', 
-                type: 'range', 
-                min: 0, 
-                max: max, 
-                step: step,
-                id: key,
-                v_color: null,
-                set_color: function(color) {
-                    this.value = color[key]
-                },
-                value: '', 
-                oninput: rangeValueChanged(key)
-            })
-        )
-    }
-
-    /**
-     * 
-     * @param {{r:number, g: number, b: number, a: number}} color 
-     * @returns {ElementDefinition}
-     */
-    function colorSwatch(color) {
-        let c = Color.fromObject(color)
-        return button({
-            class: 'btn circle', 
-            v_color: null,
-            onclick: setColor(c),
-            style: `background-color: ${c.getAsCssValue()};`
-        })
-    }
 }
+
+function colorPickerDisplay() {
+    return div({
+        class: 'c-color-picker__display',  
+        style: '',
+        v_color: null,
+        set_color: function(color) {
+            this.style = `background-color: ${this.v_color.getAsCssValue()}`
+        }
+    })
+}
+
+function getColorSliders(propName) {
+    let key = ID_MAP[propName]
+    let max = (propName === 'opacity') ? 1 : 256
+    let step = (propName === 'opacity') ? .01 : 1
+    return div({class: 'c-color-picker__option'},
+        label({class: 'c-color-picker__range-label'}, propName),
+        input({
+            class: 'c-color-picker__range', 
+            type: 'range', 
+            min: 0, 
+            max: max, 
+            step: step,
+            v_color: null,
+            set_color: function(color) { this.value = color[key] },
+            value: '', 
+            onchange: rangeValueChanged(key)
+        })
+    )
+}
+
+/**
+ * 
+ * @param {{r:number, g: number, b: number, a: number}} color 
+ * @returns {ElementDefinition}
+ */
+function colorSwatch(color) {
+    let c = Color.fromObject(color)
+    return button({
+        class: 'btn circle',
+        onclick: setColor(c),
+        style: `background-color: ${c.getAsCssValue()};`
+    })
+}
+
 
 function setColor(color) {
     return function(ev) {
@@ -109,10 +103,10 @@ function setColor(color) {
     }
 }
 
-function rangeValueChanged(id) {
+function rangeValueChanged(colorKey) {
     return function(ev) {
         this.value = Number(ev.target.value)
-        let color = Color.fromObject(Object.assign({} , this.v_color, {[id]: this.value}))
+        let color = Color.fromObject(Object.assign({} , this.v_color, {[colorKey]: this.value}))
         this.emit('onColorChanged', color)
     }
 }

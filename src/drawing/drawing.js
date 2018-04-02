@@ -11,7 +11,10 @@ export function init() {
   addDragHandler({element: canvas}, path.startDrawing())
 }
 
-export function clear() {
+export function clear(all) {
+  if (all) {
+    path.clearBackstack()
+  }
   ctx.clearRect(0,0, canvas.width, canvas.height)
   store.clear()
 }

@@ -37,7 +37,7 @@ export class Color {
         this.r = Math.round(colorConfig.r || this.r)
         this.g = Math.round(colorConfig.g || this.g)
         this.b = Math.round(colorConfig.b || this.b)
-        this.a = isNaN(colorConfig.a) ? 1 : this.a
+        this.a = isNaN(colorConfig.a) ? 1 : Math.min(colorConfig.a, this.a)
     }
 
     getAsCssValue() {
@@ -51,7 +51,7 @@ export class Color {
      * @memberof Color
      */
     copy() {
-        return Object.assign(Color.prototype, this)
+        return Color.fromObject(this)
     }
 }
 

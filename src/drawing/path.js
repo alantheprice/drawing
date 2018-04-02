@@ -29,7 +29,6 @@ export class Path {
    * @memberof Path
    */
   updateSettings(nameValueSetting) {
-    debugger
     this.settings = Object.assign(this.settings, nameValueSetting)
     if (nameValueSetting.color && nameValueSetting.color.a !== 1) {
       this.settings.opacity = nameValueSetting.color.a
@@ -78,9 +77,8 @@ export class Path {
       this.ctx.lineTo(points.x, points.y)
     })
     this.ctx.lineWidth = settings.lineWidth
-    this.ctx.lineCap = 'round'
+    // this.ctx.lineCap = 'round'
     this.ctx.strokeStyle = settings.color.getAsCssValue()
-    // debugger
     this.ctx.stroke()
   }
 
@@ -93,8 +91,8 @@ export class Path {
    */
   savePath(path, settings) {
     this.paths.push({path: path, settings: settings.copy()})
-    // this.clear()
-    // this.drawAllPaths(this.paths)
+    this.clear()
+    this.drawAllPaths(this.paths)
     store.save('paths', this.paths)
   }
 
@@ -114,5 +112,8 @@ export class Path {
     this.paths = paths
   }
 
+  clearBackstack() {
+    this.paths = [];
+  }
 }
 

@@ -92,7 +92,6 @@ function getTouchXY(ev) {
       return insideEdgeThreshold(touch.clientX, window.innerWidth) &&
         insideEdgeThreshold(touch.clientY, window.innerHeight)
     })
-    debugger
     if (touches.length) {
       touchX = touches[0].clientX
       touchY = touches[0].clientY
