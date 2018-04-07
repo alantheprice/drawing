@@ -3,7 +3,10 @@
 
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#5b97f7">
     <link rel="manifest" href="./manifest.json">
+
+    <link rel="apple-touch-icon" href="./icon/launcher-icon-4x.png">
   </head>
 
   <body>
@@ -11,36 +14,55 @@
     <canvas id="canvas" style="width: 100%; height: 100%; background-color: #eee;"></canvas>
     <div id="app"></div>
     <script>
-      (() => {
-        const canvas = document.getElementById('canvas')
-        let h = window.innerHeight
-        let w = window.innerWidth
-        let yc = h/2
-        let xc = w/2
-        canvas.setAttribute('width', w + '')
-        canvas.setAttribute('height', h + '')
-        const ctx = canvas.getContext('2d')
-        let fs = h / 5
+      (function() {
+        var LK = 'loaded'
+        var canvas = document.getElementById('canvas')
+        var h = window.innerHeight
+        var w = window.innerWidth
+        setSize(w,h)
+        var a = Math.min(w, h)
+        var yc = h/2
+        var xc = w/2
+        var ctx = canvas.getContext('2d')
+        var fs = h / 5
         // outline
-        let arcs = [
+        var arcs = [
           [xc, yc, fs, 0, 2,'stroke'],
-          [xc - (fs/2.5), yc - (fs/2.5), 10, 0, 2,'fill'],
-          [xc + (fs/2.5), yc - (fs/2.5), 10, 0, 2, 'fill'],
+          [xc - (fs/2.5), yc - (fs/2.5), a / 50, 0, 2,'fill'],
+          [xc + (fs/2.5), yc - (fs/2.5), a / 50, 0, 2, 'fill'],
           [xc, yc, fs/2, .1, .9,'stroke']
         ];
-        arcs.forEach((p, i) => {
-          // setTimeout(() => {
+
+        if (localStorage.getItem(LK) === 'true') {
+          // only show on first load.
+          return;
+        }
+        arcs.forEach(function(p, i) {
+          setTimeout(function() {
             arc(p[0],p[1],p[2],p[3],p[4],p[5])
-          // }, 300 * i)
+          }, 500 * i)
+          if (i + 1 === arcs.length) {
+            setTimeout(function(){
+              ctx.clearRect(0,0, w, h)
+            }, 900 * i)
+          }
         })
+
+        function setSize(w, h) {
+          canvas.setAttribute('width', w + '')
+          canvas.setAttribute('height', h + '')
+        }
 
         function arc(l, t, r, s, m, func) {
           ctx.beginPath()
           ctx.arc(l, t, r, s * Math.PI, m * Math.PI, false);
-          ctx.lineWidth = 5
+          ctx.lineWidth = a / 50
           ctx.strokeStyle = 'black'
+          ctx.lineCap = 'round'
           ctx[func]()
         }
+
+        localStorage.setItem(LK, 'true')
 
         function path() {
           //TODO: math for circle.
