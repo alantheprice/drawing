@@ -20,7 +20,7 @@
     <script>
       (function() {
         var LK = 'loaded'
-        var canvas = document.getElementById('canvtias')
+        var canvas = document.getElementById('canvas')
         var h = window.innerHeight
         var w = window.innerWidth
         setSize(w,h)
@@ -55,6 +55,7 @@
         function setSize(w, h) {
           canvas.setAttribute('width', w + '')
           canvas.setAttribute('height', h + '')
+          canvas.setAttribute('style', `width: ${w}px; height: ${h}px; background-color: #eee;`)
         }
 
         function arc(l, t, r, s, m, func) {
