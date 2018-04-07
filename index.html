@@ -22,7 +22,12 @@
         const ctx = canvas.getContext('2d')
         let fs = h / 5
         // outline
-        let arcs = [[xc, yc, fs, 0, 2,'stroke'],[xc - (fs/2.5), yc - (fs/2.5), 10, 0, 2,'fill'],[xc + (fs/2.5), yc - (fs/2.5), 10, 0, 2, 'fill'],[xc, yc, fs/2, .1, .9,'stroke']];
+        let arcs = [
+          [xc, yc, fs, 0, 2,'stroke'],
+          [xc - (fs/2.5), yc - (fs/2.5), 10, 0, 2,'fill'],
+          [xc + (fs/2.5), yc - (fs/2.5), 10, 0, 2, 'fill'],
+          [xc, yc, fs/2, .1, .9,'stroke']
+        ];
         arcs.forEach((p, i) => {
           // setTimeout(() => {
             arc(p[0],p[1],p[2],p[3],p[4],p[5])
@@ -35,6 +40,10 @@
           ctx.lineWidth = 5
           ctx.strokeStyle = 'black'
           ctx[func]()
+        }
+
+        function path() {
+          //TODO: math for circle.
         }
       })()
     </script>

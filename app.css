@@ -15,6 +15,15 @@ button {
   color: rgb(70,70,70);
 }
 
+#app {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 /* Rules for sizing the icon. */
 .material-icons.md-13 { font-size: 13px; }
 .material-icons.md-18 { font-size: 18px; }
@@ -46,8 +55,8 @@ button {
 
 .btn.circle {
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   padding: 7px 5px 5px 5px;
 }
 

@@ -77,7 +77,7 @@ export class Path {
       this.ctx.lineTo(points.x, points.y)
     })
     this.ctx.lineWidth = settings.lineWidth
-    // this.ctx.lineCap = 'round'
+    this.ctx.lineCap = 'round'
     this.ctx.strokeStyle = settings.color.getAsCssValue()
     this.ctx.stroke()
   }

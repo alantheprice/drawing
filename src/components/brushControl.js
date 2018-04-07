@@ -18,28 +18,6 @@ export function brushControl() {
     return virtual({},
         colorButton(),
         brushSizeButton()
-        // colorButton({
-        //     v_settings: null,
-        //     set_settings: setCurrentSetting,
-        //     v_color: null, 
-        //     v_size: null,
-        //     // _colorSelected: '',
-        //     // _colorSelected: updateSettings('color')
-        // }),
-        // brushSizeButton()
-        //{
-            // v_size: null, 
-            // set_sizeSelected: updateSettings('lineWidth')
-        //})
     )
-
-    // /**
-    //  * @param {string} name 
-    //  */
-    // function updateSettings(name) {
-    //     return (value) => {
-    //         config.v_updateSettings({[name]: value})
-    //     }
-    // }
 }
 

@@ -7,10 +7,9 @@ const getHandle = e.getHandle
  * Brush Size Button selector component
  * 
  * @export
- * @param {{'@sizeSelected': function(number), ':currentSize': number}} config 
  * @returns 
  */
-export function brushSizeButton(config) {
+export function brushSizeButton() {
     
     return dragButton({e_onMove: handleMove, e_onclick: handleClick, _updateSize: updateSize},
         button({class: 'btn circle brush-size-btn o-flex'},

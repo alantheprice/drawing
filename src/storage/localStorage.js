@@ -21,6 +21,9 @@ export class LocalStore {
   /**
    * Load from local or session storage with key
    * Return: null if nothing found or couldn"t load
+   * @param {string} key 
+   * @returns 
+   * @memberof LocalStore
    */
   load(key) {
     return this.verifyStorage()
@@ -33,6 +36,12 @@ export class LocalStore {
       })
   }
 
+  /**
+   * Clear local Storage
+   * 
+   * @returns 
+   * @memberof LocalStore
+   */
   clear() {
     this.storage.clear()
     return Promise.resolve()

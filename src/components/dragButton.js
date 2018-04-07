@@ -21,24 +21,38 @@ export function dragButton(config, mainButton, ...overlayContent) {
     mainButton.setAttribute('set_dragging', function(dragging) {
         this[(dragging) ? 'addClass' : 'removeClass']('o-hide')
     })
-    config = Object.assign(config, {class: 'o-relative', v_dragging: false, e_dragging: setDragging })
-
+    config = Object.assign(config, {
+        class: 'o-relative', 
+        v_dragging: false, 
+        e_dragging: setDragging,
+        v_dragLocation: null,
+        e_onDragLocationChanged: function(dragLocation) {
+            this.v_dragLocation = dragLocation
+        }
+     })
+    
     return div(config,
         mainButton,
         div({
             class: 'c-drag-overlay', 
-            oncustomdrag: getDragHandler(mainButton), 
             v_dragging: false,
-            set_dragging: function(dragging) { this.setActive(dragging) } 
-        },
-            overlayContent
-        ),
+            set_dragging: function(dragging) { this.setActive(dragging) },
+            oncustomdrag: getDragHandler(mainButton),
+        }, overlayContent),
         mainButton.clone('dragbutton', { 
             onRender: function() {
                 this.addClass('o-fixed o-none')
                 this.setAttribute('style', '')
-                this.setAttribute('set_dragging', function(dragging) {
+                this.setAttribute('v_dragLocation', null)
+                this.addEmitHandler('set_dragging', function(dragging) {
                     this.setActive(dragging)
+                })
+                this.addEmitHandler('set_dragLocation', function(xy) {
+                    if (!xy) { 
+                        this.style = ''
+                        return
+                    }
+                    this.style = `left: ${xy.x}px; top: ${xy.y}px;`
                 })
             }
         })
@@ -56,10 +70,11 @@ function getDragHandler(mainButton) {
             isClick = true
             moving = true
             sPoint.view = xy
-            sPoint.win = this.parent.windowOffset()
+            sPoint.win = this.windowOffset()
+            // sPoint.win.y = 300
             setFinishDelay.call(this, ev, elem, xy, 500)
+            this.emit('onDragLocationChanged', {x: sPoint.win.x,  y: sPoint.win.y})
             this.emit('dragging', true)
-            this.style = `left: ${sPoint.win.x}px; top: ${sPoint.win.y}px;`
         },
         move: function(ev, elem, xy) {
             if (!moving || !xy) { return }
@@ -69,8 +84,8 @@ function getDragHandler(mainButton) {
             if (Math.abs(move) > 10) {
                 isClick = false
             }
-            this.emit('onMove', ev, xy.x)
-            this.style = `left: ${moveInWin}px; top: ${sPoint.win.y}px;`
+            this.emit('onDragLocationChanged', {x: moveInWin,  y: sPoint.win.y})
+            this.emit('onMove', ev, xy.x)            
         },
         finish: function(ev, elem, xy) {
             clearTimeout(timeoutId)
@@ -80,7 +95,7 @@ function getDragHandler(mainButton) {
             if (isClick) {
                 this.emit('onlick', ev, mainButton)
             }
-            this.style = ''
+            this.emit('onDragLocationChanged', null)
         }
     }
     function setFinishDelay(ev, elem, xy, timeout) {
