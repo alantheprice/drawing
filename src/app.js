@@ -1,7 +1,5 @@
-import { e, ElementDefinition } from './templater/ElementDefinition'
 import { controlOverlay } from './components/controlOverlay'
 import u from './utils'
-const { div, button, i } = e
 
 // initialize drawing
 setup()

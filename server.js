@@ -45,6 +45,14 @@ http.createServer(function (request, response) {
             }
         }
         else {
+            content.toString('utf-8')
+            let stringContent = null
+            if (extname === '.js' || extname === '.html') {
+                stringContent = content.toString('utf-8')
+                stringContent = stringContent.replace("from 'ele-mint'", `from '../../node_modules/ele-mint/src/eleMint.js'`)
+                stringContent = stringContent.replace('<script async src="./dist/app.min.js"></script>', '<script async src="./node_modules/es6-import/dist/importer.js" import="./src/app.js" cache-all="false" npm-modules="ele-mint"></script>')
+                content = new Buffer(stringContent, 'utf-8')
+            }
             response.writeHead(200, { "Content-Type": contentType });
             response.end(content, "utf-8");
         }
