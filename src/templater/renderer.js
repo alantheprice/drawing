@@ -1,4 +1,4 @@
-import { override, getHandle} from '../../node_modules/ele-mint/src/eleMint.js'
+import { override, getHandle} from 'ele-mint'
 import { addDragHandler, addEvent, CUSTOM_DRAG_EVENT } from '../eventHandling/event'
 
 const overrides = function() {}
