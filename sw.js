@@ -7,8 +7,7 @@ const CACHED_ASSETS = [
   './icon/launcher-icon-1x.png',
   './icon/launcher-icon-2x.png',
   './icon/launcher-icon-4x.png',
-  'https://fonts.googleapis.com/icon?family=Material+Icons', 
-  'https://unpkg.com/es6-import',
+  'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://fonts.gstatic.com/s/materialicons/v36/2fcrYFNaTjcS6g4U3t-Y5UEw0lE80llgEseQY3FEmqw.woff2'
 ]
 
@@ -19,7 +18,7 @@ self.addEventListener('install', (ev) => {
 })
 
 self.addEventListener('fetch', (ev) => {
-   console.log('serving asset')
+   console.log('serving asset')z
    let response = loadFromNetwork(ev.request, 400)
      .catch(() => {
        return loadFromCache(ev.request)
