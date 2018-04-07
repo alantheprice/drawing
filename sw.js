@@ -2,7 +2,7 @@ const CACHE = 'RAWD_CACHE'
 const CACHED_ASSETS = [
   'index.html', 
   'app.css',
-  'app.min.js',
+  './dist/app.min.js',
   'manifest.json',
   './icon/launcher-icon-1x.png',
   './icon/launcher-icon-2x.png',
