@@ -18,7 +18,7 @@ self.addEventListener('install', (ev) => {
 })
 
 self.addEventListener('fetch', (ev) => {
-   console.log('serving asset')z
+   console.log('serving asset')
    let response = loadFromNetwork(ev.request, 400)
      .catch(() => {
        return loadFromCache(ev.request)
