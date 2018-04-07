@@ -20,6 +20,7 @@
       }
     ],
     "background_color": "rgb(20,20,20)",
+    "theme_color": "rgb(70, 156, 231)",
     "start_url": "index.html"
   }
   
