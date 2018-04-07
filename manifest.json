@@ -1,25 +1,25 @@
 {
     "short_name": "RAWD",
-    "name": "Simple Drawing App",
+    "name": "Draw a bit",
     "display": "standalone",
     "icons": [
       {
         "src": "./icon/launcher-icon-1x.png",
         "type": "image/png",
-        "sizes": "48x48"
+        "sizes": "96x96"
       },
       {
         "src": "./icon/launcher-icon-2x.png",
         "type": "image/png",
-        "sizes": "96x96"
+        "sizes": "192x192"
       },
       {
         "src": "./icon/launcher-icon-4x.png",
         "type": "image/png",
-        "sizes": "192x192"
+        "sizes": "512x512"
       }
     ],
-    "background_color": "rgb(40, 120, 240)",
+    "background_color": "rgb(20,20,20)",
     "start_url": "index.html"
   }
   
