@@ -2,7 +2,7 @@
 <html lang="en">
 
   <head>
-    <title>RAWD</title>
+    <title>DRAW</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#5b97f7">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -56,8 +56,8 @@
           canvas.setAttribute('width', w + '')
           canvas.setAttribute('height', h + '')
           canvas.setAttribute('style', `width: ${w}px; height: ${h}px; background-color: #eee;`)
-          context.fillStyle = "#eee";
-          context.fillRect(0, 0, w, h);
+          ctx.fillStyle = "#eee";
+          ctx.fillRect(0, 0, w, h);
         }
 
         function arc(l, t, r, s, m, func) {
@@ -70,10 +70,6 @@
         }
 
         localStorage.setItem(LK, 'true')
-
-        function path() {
-          //TODO: math for circle.
-        }
       })()
     </script>
     <noscript>
