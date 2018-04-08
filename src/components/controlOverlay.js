@@ -1,11 +1,11 @@
-import { init, clear, undo, updateSettings } from '../drawing/drawing'
+import { init, clear, undo, updateSettings, downloadImage } from '../drawing/drawing'
 import { e } from '../templater/renderer'
 import { colorButton } from './colorButton'
 import { brushControl } from './brushControl'
 import { Setting } from '../settings/Setting'
 import { Color } from '../color/Color'
 
-const { button, i, div } = e.elements
+const { button, i, div, a } = e.elements
 const getHandle = e.getHandle
 
 let settingsShowing = false
@@ -25,7 +25,7 @@ function showSettings(layouts) {
  * 
  * 
  * @export
- * @returns {ElementDefinition}
+ * @returns {function}
  */
 export function controlOverlay(config) {
     let settings = new Setting(color, size, color.a)
@@ -39,11 +39,12 @@ export function controlOverlay(config) {
                 e_updateColor: setChange('v_color'),
                 e_updateSize: setChange('v_size')
             },
-        // button({class:'btn circle setting-btn', onclick: () => showSettings([])},
-        //     i({class:'material-icons md-light md-36', textContent: 'settings'})
-        // ),
+        // a({class: 'c-editor__button', onclick: save, href: '#', v_editorFields: {}, download: 'file.html'}, 'Save'),
 
-        // todo: add save button here.
+        a({ class:'btn circle download-btn', href: '#', download: 'drawing.png', onclick: downloadImage },
+            i({class:'material-icons md-light md-36', textContent: 'save'})
+        ),
+
         div({class:'c-editing-buttons'},
             button({class: 'btn circle clear-btn', onclick: function() { clear(true) } },
                 i({class: 'material-icons md-light md-36'}, 'delete_forever')

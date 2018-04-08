@@ -268,14 +268,19 @@ button {
   height: 50px;
 }
 
-.setting-btn {
+.download-btn {
   position: absolute;
   right: 15px;
   top: 15px;
-  background-color: rgb(81, 94, 233);
+  background-color: rgb(102,187,106);
 }
-.setting-btn:hover, .setting-btn:focus {
-  background-color: rgba(40, 52, 187, 0.85);
+
+.download-btn i {
+  margin: 2px 0 0 3px;
+}
+
+.download-btn:hover, .download-btn:focus {
+  background-color: rgb(76,175,80);
 }
 
 .clear-btn {

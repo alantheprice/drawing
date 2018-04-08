@@ -13,6 +13,8 @@ export function pop() {
 }
 
 function makeRequest(request) {
+    
+
     if (instanceId) {
         request.body.instanceId = instanceId
         request.method = 'PUT'

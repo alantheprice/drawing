@@ -25,14 +25,11 @@ export function undo() {
   path.undo()
 }
 
-export function downloadImage() {
-  // THIS DOESN'T work, it likely needs the anchor tag to be clicked by the user, rather than via function
-  let downloader = a({href: '#', target: '_blank', onclick: function() {
-    this.elem.href = getCanvasAsDataURL()
-    this.elem.download = 'drawing.png'
-  }})
-  .render(document.body)
-  downloader.elem.click()
+export function downloadImage(ev) {
+  // ev.preventDefault = false
+  debugger
+  this.href = canvas.toDataURL()
+  // debugger
 }
 
 export function updateSettings(newSetting) {
@@ -40,5 +37,5 @@ export function updateSettings(newSetting) {
 }
 
 function getCanvasAsDataURL() {
-  canvas.toDataURL("image/png").replace(/^data:image\/png/,'data:application/octet-stream')
+  return canvas.toDataURL("image/png").replace(/^data:image\/png/,'data:application/octet-stream')
 }

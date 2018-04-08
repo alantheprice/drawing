@@ -25,15 +25,15 @@ export function addDragHandler(context, handler) {
       removeStopEvent()
     }
 
-    let removeStopEvent = addEvent(context, 'mouseup', _finish)
+    let removeStopEvent = addEvent(context, 'mouseup', _finish, true)
     let removeMoveEvent = addEvent(context,  'mousemove', (mEV, elem, mXY) => {
       clearTimeout(finishTimeout)
       handler.move.call(context, mEV, elem, mXY)
       finishTimeout = setTimeout(() => {
         _finish(mEV, elem, mXY)
       }, 500)
-    })
-  })
+    }, true)
+  }, true)
 }
 
 /**
@@ -45,9 +45,11 @@ export function addDragHandler(context, handler) {
  * @param {function(Event, {element: HTMLElement}, {x: number, y: number})} handler 
  * @returns {function()} remove
  */
-export function addEvent(context, eventName, handler) {
+export function addEvent(context, eventName, handler, preventDefault) {
   let handle = (ev) => {
-    ev.preventDefault()
+    if (preventDefault) {
+      ev.preventDefault()
+    }
     handler.call(context, ev, context, getXY(ev))
   }
   context.element.addEventListener(eventName, handle)
