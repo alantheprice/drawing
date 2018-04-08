@@ -56,6 +56,8 @@
           canvas.setAttribute('width', w + '')
           canvas.setAttribute('height', h + '')
           canvas.setAttribute('style', `width: ${w}px; height: ${h}px; background-color: #eee;`)
+          context.fillStyle = "#eee";
+          context.fillRect(0, 0, w, h);
         }
 
         function arc(l, t, r, s, m, func) {

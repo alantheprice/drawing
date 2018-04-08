@@ -18,6 +18,8 @@ export function clear(all) {
     path.clearBackstack()
   }
   ctx.clearRect(0,0, canvas.width, canvas.height)
+  ctx.fillStyle = "#eee";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   store.save('paths', null)
 }
 
@@ -26,9 +28,9 @@ export function undo() {
 }
 
 export function downloadImage(ev) {
-  // ev.preventDefault = false
-  debugger
-  this.href = canvas.toDataURL()
+    // ev.preventDefault = false
+  // this.download = 'image.jpg'
+  this.href = getCanvasAsDataURL() //canvas.toDataURL('image/jpg')
   // debugger
 }
 
