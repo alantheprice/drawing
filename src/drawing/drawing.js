@@ -29,8 +29,8 @@ export function undo() {
 
 export function downloadImage(ev) {
     // ev.preventDefault = false
-  // this.download = 'image.jpg'
-  this.href = getCanvasAsDataURL() //canvas.toDataURL('image/jpg')
+  this.download = 'image.jpg'
+  this.href = canvas.toDataURL('image/jpg')
   // debugger
 }
 
