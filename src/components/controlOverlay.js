@@ -4,6 +4,7 @@ import { colorButton } from './colorButton'
 import { brushControl } from './brushControl'
 import { Setting } from '../settings/Setting'
 import { Color } from '../color/Color'
+import { isIOS } from '../utils';
 
 const { button, i, div, a } = e.elements
 const getHandle = e.getHandle
@@ -30,21 +31,23 @@ function showSettings(layouts) {
 export function controlOverlay(config) {
     let settings = new Setting(color, size, color.a)
     updateSettings(settings)
-    return div({class:'c-overlay-container',
-                _updateSettings: function() { updateSettings(this.v_settings) },
-                v_settings: settings, 
-                set_settings: settingsChanged,
-                v_color: color,
-                v_size: size,
-                e_updateColor: setChange('v_color'),
-                e_updateSize: setChange('v_size')
-            },
-        // a({class: 'c-editor__button', onclick: save, href: '#', v_editorFields: {}, download: 'file.html'}, 'Save'),
 
-        a({ class:'btn circle download-btn', href: '#', download: 'drawing.png', onclick: downloadImage },
-            i({class:'material-icons md-light md-36', textContent: 'save'})
-        ),
+    return div({
+        class:'c-overlay-container',
+            _updateSettings: function() { updateSettings(this.v_settings) },
+            v_settings: settings, 
+            set_settings: settingsChanged,
+            v_color: color,
+            v_size: size,
+            e_updateColor: setChange('v_color'),
+            e_updateSize: setChange('v_size')
+        },
+        getButtons()
+    )
+}
 
+function getButtons() {
+    let buttons = [
         div({class:'c-editing-buttons'},
             button({class: 'btn circle clear-btn', onclick: function() { clear(true) } },
                 i({class: 'material-icons md-light md-36'}, 'delete_forever')
@@ -54,6 +57,16 @@ export function controlOverlay(config) {
             ),
             brushControl()
         )
+    ]
+    if (!isIOS()) {
+        buttons.unshift(downloadAnchor())
+    }
+    return buttons
+}
+
+function downloadAnchor() {
+    return a({class:'btn circle download-btn', href: '#', download: 'drawing.png', onclick: downloadImage },
+        i({class:'material-icons md-light md-36', textContent: 'save'})
     )
 }
 
@@ -61,7 +74,6 @@ function setChange(key) {
     return function setValue(newVal) {
         this[key] = newVal
         localStorage.setItem(key, JSON.stringify(newVal))
-        // debugger
         this.v_settings = new Setting(this.v_color, this.v_size, this.v_color.a)
         this._updateSettings()
     }
@@ -69,13 +81,11 @@ function setChange(key) {
 
 function settingsChanged(newSetting) {
     this.v_settings = newSetting
-    // debugger
     this._updateSettings()
 }
 
 function loadPreviousColor() {
     let stored = localStorage.getItem('v_color')
-    // debugger
     if (stored) {
         return Color.fromObject(JSON.parse(stored))
     }
