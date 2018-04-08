@@ -1,27 +1,33 @@
 {
-    "short_name": "RAWD",
-    "name": "RAWD Draw a bit",
+    "short_name": "DRAW",
+    "name": "DRAW a bit",
+    "description": "Simple drawing application, super simple, just for fun",
     "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#eee",
+    "theme_color": "#4488F4",
+    "start_url": "index.html",
     "icons": [
       {
         "src": "./icon/launcher-icon-1x.png",
         "type": "image/png",
-        "sizes": "96x96"
+        "sizes": "48x48"
       },
       {
         "src": "./icon/launcher-icon-2x.png",
         "type": "image/png",
-        "sizes": "192x192"
+        "sizes": "96x96"
       },
       {
         "src": "./icon/launcher-icon-4x.png",
         "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "./icon/launcher-icon-8x.png",
+        "type": "image/png",
         "sizes": "512x512"
       }
-    ],
-    "orientation": "portrait",
-    "background_color": "#eee",
-    "theme_color": "#4488F4",
-    "start_url": "index.html"
+    ]
   }
   
