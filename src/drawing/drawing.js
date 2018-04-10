@@ -18,7 +18,7 @@ export function clear(all) {
   ctx.clearRect(0,0, canvas.width, canvas.height)
   ctx.fillStyle = "#eee";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  store.save('paths', null)
+  store.remove('paths')
 }
 
 export function undo() {
