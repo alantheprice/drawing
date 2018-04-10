@@ -45,28 +45,27 @@
   </div>
   <script>
     (function () {
-      
       let LK = 'loaded',
         canvas = document.getElementById('canvas'),
         ic = document.getElementById('initialAnimator'),
         wh = window.innerHeight,
         ww = window.innerWidth,
-        a = Math.min(wh * .8, ww * .8)
+        a = Math.min(wh * .8, ww * .8);
 
-      setSize()
-      ic.style = `width: ${a}px; height: ${a}px`
-      ic.width = a + ''
-      ic.height = a + ''
+      setSize();
+      ic.style = `width: ${a}px; height: ${a}px`;
+      ic.width = a + '';
+      ic.height = a + '';
 
-      let center = {y: a / 2, x: a / 2 }
-      let ctx = ic.getContext('2d')
+      let center = {y: a / 2, x: a / 2 };
+      let ctx = ic.getContext('2d');
 
       if (localStorage.getItem(LK) === 'true') {
-        return finish()
+        return finish();
       }
       
-      drawFace()
-      localStorage.setItem(LK, 'true')
+      drawFace();
+      localStorage.setItem(LK, 'true');
 
       function drawFace() {
         let fs = a / 5,
@@ -74,30 +73,30 @@
           face = getPoints(90, faceRadius, center),
           smile = getPoints(180, a / 7, center).slice(110, 160),
           lEye = {x: center.x + (fs / 2.5), y: center.y - (fs / 2.5)},
-          rEye = {x: center.x - (fs / 2.5), y: center.y - (fs / 2.5)}
+          rEye = {x: center.x - (fs / 2.5), y: center.y - (fs / 2.5)};
 
-        ctx.font = `${faceRadius/ 3}px tahoma`
-        ctx.fillText('Draw for a bit!', center.x - faceRadius, center.y + (fs * 2))
+        ctx.font = `${faceRadius/ 3}px tahoma`;
+        ctx.fillText('Draw for a bit!', center.x - faceRadius, center.y + (fs * 2));
         drawPath(face, a/60, 8).then(() => {
-          return drawPath([lEye], a/30, 10)
+          return drawPath([lEye], a/30, 10);
         }).then(() => {
-          return drawPath([rEye], a/30, 10)
+          return drawPath([rEye], a/30, 10);
         }).then(() => {
-          return drawPath(smile, a/60, 7)
+          return drawPath(smile, a/60, 7);
         }).then(() => {
-          setTimeout(() => finish(true), 500)
+          setTimeout(() => finish(true), 500);
         })
       }
 
       function arrayAtLength(count) {
-        return Array(count).join(',').split(',')
+        return Array(count).join(',').split(',');
       }
 
       function getPoints(count, radius, c) {
         c = c || {
           x: 160,
           y: 300
-        }
+        };
         return arrayAtLength(count)
           .map((_, index) => {
             radians = 2 * index * Math.PI / count;
@@ -117,28 +116,29 @@
       }
 
       function drawPath(points, lw, delayTime) {
-        ctx.beginPath()
-        ctx.moveTo(points[0].x, points[0].y)
-        ctx.lineWidth = lw || 10
-        ctx.lineCap = 'round'
-        ctx.strokeStyle = '#303030'
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        ctx.lineWidth = lw || 10;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#303030';
         points.forEach((ps, index) => {
           setTimeout(() => {
-            ctx.lineTo(ps.x, ps.y)
-            ctx.stroke()
+            ctx.lineTo(ps.x, ps.y);
+            ctx.stroke();
           }, index * delayTime)
         })
         return new Promise((resolve, reject) => {
-          setTimeout(resolve, (points.length * delayTime + 300))
+          setTimeout(resolve, (points.length * delayTime + 300));
         })
       }
 
       function setSize() {
-        let w = window.innerWidth
+        let w = window.innerWidth,
             h = window.innerHeight
         var drawingContext = canvas.getContext('2d')
         canvas.width = w + ''
         canvas.height = h + ''
+        canvas.style = `width: ${w}px; height: ${h}px;`
         drawingContext.fillStyle = "#eee"
         drawingContext.fillRect(0, 0, w, h)
       }
