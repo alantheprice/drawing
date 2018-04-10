@@ -62,7 +62,7 @@
       let ctx = ic.getContext('2d')
 
       if (localStorage.getItem(LK) === 'true') {
-        finish()
+        return finish()
       }
       
       drawFace()
@@ -146,8 +146,7 @@
       function finish(animate) {
         let rm = () => initalizer.parentElement.removeChild(initalizer)
         if (!animate) { 
-          rm(); 
-          return;
+          return rm(); 
         }
         initalizer.classList.add('hide')
         setTimeout(rm, 1000)
