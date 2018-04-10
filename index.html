@@ -40,13 +40,12 @@
   <!-- for initial load it is helpful to set a few styles so the page doesn't need to wait for styles to load -->
   <canvas id="canvas" style="width: 100vw; height: 100vh; background-color: #eee;"></canvas>
   <div id="app"></div>
-  <div id="initalizer" class="initializer">
+  <div id="initalizer" class="initializer hide">
       <canvas id="initialAnimator" class="i-canvas"></canvas>
   </div>
   <script>
     (function () {
       let LK = 'loaded',
-        canvas = document.getElementById('canvas'),
         ic = document.getElementById('initialAnimator'),
         wh = window.innerHeight,
         ww = window.innerWidth,
@@ -62,6 +61,8 @@
 
       if (localStorage.getItem(LK) === 'true') {
         return finish();
+      } else {
+        initalizer.classList.remove('hide')
       }
       
       drawFace();
@@ -125,7 +126,7 @@
           setTimeout(() => {
             ctx.lineTo(ps.x, ps.y);
             ctx.stroke();
-          }, index * delayTime)
+          }, index * delayTime);
         })
         return new Promise((resolve, reject) => {
           setTimeout(resolve, (points.length * delayTime + 300));
@@ -134,22 +135,23 @@
 
       function setSize() {
         let w = window.innerWidth,
-            h = window.innerHeight
-        var drawingContext = canvas.getContext('2d')
-        canvas.width = w + ''
-        canvas.height = h + ''
-        canvas.style = `width: ${w}px; height: ${h}px;`
-        drawingContext.fillStyle = "#eee"
-        drawingContext.fillRect(0, 0, w, h)
+            h = window.innerHeight,
+            can = document.getElementById('canvas'),
+            dCtx = can.getContext('2d');
+        can.width = w + '';
+        can.height = h + ''
+        can.style = `width: ${w}px; height: ${h}px;`
+        dCtx.fillStyle = "#eee";
+        dCtx.fillRect(0, 0, w, h);
       }
 
       function finish(animate) {
-        let rm = () => initalizer.parentElement.removeChild(initalizer)
+        let rm = () => initalizer.parentElement.removeChild(initalizer);
         if (!animate) { 
           return rm(); 
         }
-        initalizer.classList.add('hide')
-        setTimeout(rm, 1000)
+        initalizer.classList.add('hide');
+        setTimeout(rm, 1000);
       }
     })()
   </script>
