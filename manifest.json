@@ -1,6 +1,6 @@
 {
     "short_name": "DRAW",
-    "name": "DRAW a bit",
+    "name": "Draw a bit",
     "description": "Simple drawing application, super simple, just for fun",
     "display": "standalone",
     "orientation": "portrait",

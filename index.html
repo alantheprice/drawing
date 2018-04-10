@@ -145,7 +145,10 @@
 
       function finish(animate) {
         let rm = () => initalizer.parentElement.removeChild(initalizer)
-        if (!animate) { rm() }
+        if (!animate) { 
+          rm(); 
+          return;
+        }
         initalizer.classList.add('hide')
         setTimeout(rm, 1000)
       }
