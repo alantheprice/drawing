@@ -77,7 +77,7 @@ function getColorSliders(propName) {
             v_color: null,
             set_color: function(color) { this.value = color[key] },
             value: '', 
-            onchange: rangeValueChanged(key)
+            oninput: rangeValueChanged(key)
         })
     )
 }
