@@ -1,4 +1,20 @@
-<!doctype html><html lang="en"><head><title>DRAW</title><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/><meta name="theme-color" content="#5b97f7"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-title" content="DRAW"/><meta name="apple-mobile-web-app-status-bar-style" content="#5b97f7"/><link rel="apple-touch-icon" href="./icon/launcher-icon-8x.png"/><link rel="apple-touch-startup-image" href="./icon/launcher-icon-8x.png"/><link rel="manifest" href="./manifest.json"/><style>.i-canvas {
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DRAW</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"
+    />
+    <meta name="theme-color" content="#5b97f7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="DRAW" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#5b97f7" />
+    <link rel="apple-touch-icon" href="./icon/launcher-icon-8x.png" />
+    <link rel="apple-touch-startup-image" href="./icon/launcher-icon-8x.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <style>
+      .i-canvas {
         position: relative;
         margin: auto;
         border-radius: 10px;
@@ -18,7 +34,20 @@
       }
       .initializer.hide {
         opacity: 0;
-      }</style></head><body><canvas id="canvas" style="width: 100vw; height: 100vh; background-color: #eee"></canvas><div id="app"></div><div id="initalizer" class="initializer hide"><canvas id="initialAnimator" class="i-canvas"></canvas></div><script>(function () {
+      }
+    </style>
+  </head>
+  <body>
+    <canvas
+      id="canvas"
+      style="width: 100vw; height: 100vh; background-color: #eee"
+    ></canvas>
+    <div id="app"></div>
+    <div id="initalizer" class="initializer hide">
+      <canvas id="initialAnimator" class="i-canvas"></canvas>
+    </div>
+    <script>
+      (function () {
         let LK = "loaded",
           ic = document.getElementById("initialAnimator"),
           wh = window.innerHeight,
@@ -138,4 +167,18 @@
           initalizer.classList.add("hide");
           setTimeout(rm, 1000);
         }
-      })();</script><noscript><h1 style="color: #ff0000; text-align: center; margin: 48% 50px 0 50px">Sorry Javascript is disabled, a drawing application doesn't work without Javascript. You are out of luck.</h1></noscript><script src="app.min.js"></script><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/></body></html>
+      })();
+    </script>
+    <noscript
+      ><h1 style="color: #ff0000; text-align: center; margin: 48% 50px 0 50px">
+        Sorry Javascript is disabled, a drawing application doesn't work without
+        Javascript. You are out of luck.
+      </h1></noscript
+    >
+    <script src=".dist/app.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </body>
+</html>
