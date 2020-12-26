@@ -1,6 +1,6 @@
 const CACHE = 'RAWD_CACHE'
 const CACHED_ASSETS = [
-  'index.html', 
+  'index.html',
   'app.css',
   './dist/app.min.js',
   'manifest.json',
@@ -19,12 +19,12 @@ self.addEventListener('install', (ev) => {
 })
 
 self.addEventListener('fetch', (ev) => {
-   console.log('serving asset')
-   let response = loadFromNetwork(ev.request, 400)
-     .catch(() => {
-       return loadFromCache(ev.request)
-     })
-   ev.respondWith(response)
+  console.log('serving asset')
+  let response = loadFromNetwork(ev.request, 400)
+    .catch(() => {
+      return loadFromCache(ev.request)
+    })
+  ev.respondWith(response)
 })
 
 function precache() {
@@ -37,9 +37,9 @@ function loadFromNetwork(request, maxWaitMilliseconds) {
   return new Promise((resolve, reject) => {
     let timeoutId = setTimeout(reject, maxWaitMilliseconds)
     fetch(request).then((response) => {
-        clearTimeout(timeoutId)
-        resolve(response)
-      })
+      clearTimeout(timeoutId)
+      resolve(response)
+    })
       .catch(reject)
   })
 }

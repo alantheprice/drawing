@@ -1,1 +1,1 @@
-## We may need more publishing stuff here eventually
+cp ./dist/index.html ./
