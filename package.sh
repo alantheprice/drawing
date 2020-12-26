@@ -1,1 +1,1 @@
-cp ./dist/index.html ./
+#cp ./dist/index.html ./
