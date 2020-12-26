@@ -7,7 +7,7 @@ const CACHED_ASSETS = [
   './icon/launcher-icon-1x.png',
   './icon/launcher-icon-2x.png',
   './icon/launcher-icon-4x.png',
-  './icon/launcher-icon-4x.png',
+  './icon/launcher-icon-8x.png',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://fonts.gstatic.com/s/materialicons/v36/2fcrYFNaTjcS6g4U3t-Y5UEw0lE80llgEseQY3FEmqw.woff2'
 ]
