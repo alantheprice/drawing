@@ -17,9 +17,9 @@ let size = loadPreviousSize()
 init()
 
 function showSettings(layouts) {
-  settingsShowing = !settingsShowing
-  layouts.forEach((layout) => layout.setActive(settingsShowing))
-  console.log('settings-clicked')
+    settingsShowing = !settingsShowing
+    layouts.forEach((layout) => layout.setActive(settingsShowing))
+    console.log('settings-clicked')
 }
 
 /**
@@ -33,27 +33,27 @@ export function controlOverlay(config) {
     updateSettings(settings)
 
     return div({
-        class:'c-overlay-container',
-            _updateSettings: function() { updateSettings(this.v_settings) },
-            v_settings: settings, 
-            set_settings: settingsChanged,
-            v_color: color,
-            v_size: size,
-            e_updateColor: setChange('v_color'),
-            e_updateSize: setChange('v_size')
-        },
+        class: 'c-overlay-container',
+        _updateSettings: function () { updateSettings(this.v_settings) },
+        v_settings: settings,
+        set_settings: settingsChanged,
+        v_color: color,
+        v_size: size,
+        e_updateColor: setChange('v_color'),
+        e_updateSize: setChange('v_size')
+    },
         getButtons()
     )
 }
 
 function getButtons() {
     let buttons = [
-        div({class:'c-editing-buttons'},
-            button({class: 'btn circle clear-btn', onclick: function() { clear(true) } },
-                i({class: 'material-icons md-light md-36'}, 'delete_forever')
+        div({ class: 'c-editing-buttons' },
+            button({ class: 'btn circle clear-btn', onclick: function () { clear(true) } },
+                i({ class: 'material-icons md-light md-36' }, 'delete_forever')
             ),
-            button({class:'btn circle undo-btn', onclick: undo},
-                i({class:'material-icons md-light md-36'}, 'undo')
+            button({ class: 'btn circle undo-btn', onclick: undo },
+                i({ class: 'material-icons md-light md-36' }, 'undo')
             ),
             brushControl()
         )
@@ -65,8 +65,8 @@ function getButtons() {
 }
 
 function downloadAnchor() {
-    return a({class:'btn circle download-btn', href: '#', download: 'drawing.png', onclick: downloadImage },
-        i({class:'material-icons md-light md-36', textContent: 'save'})
+    return a({ class: 'btn circle download-btn', href: '#', download: 'drawing.png', onclick: downloadImage },
+        i({ class: 'material-icons md-light md-36', textContent: 'save' })
     )
 }
 
@@ -89,7 +89,7 @@ function loadPreviousColor() {
     if (stored) {
         return Color.fromObject(JSON.parse(stored))
     }
-    return new Color(40,40,40, 1)
+    return new Color(40, 40, 40, 1)
 }
 
 function loadPreviousSize() {

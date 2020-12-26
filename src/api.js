@@ -2,13 +2,14 @@
 import { LocalStore } from './storage/localStorage.js'
 const store = new LocalStore()
 const INSTANCE_ID_KEY = 'instanceId'
-const URL = 'http://localhost:3007/'
-let instanceId = null
+const API_URL = window.location.origin
 
+let instanceId = null
 store.load(INSTANCE_ID_KEY).then(id => instanceId = id)
+let canvas
 
 export function sendPath(path) {
-
+    let request = new Request()
 }
 
 export function sendClear() {
@@ -19,11 +20,17 @@ export function pop() {
 
 }
 
+function getCanvasSize() {
+    if (!canvas) {
+        canvas = document.getElementById('canvas')
+    }
+    return {width: canvas.width, height: canvas.height}
+}
+
 function makeRequest(request) {
-    request.url = URL
     if (instanceId) {
         request.body.instanceId = instanceId
-        request.method = 'PUT'
+        request.method = 'POST'
     }
     fetch(request)
         .then((response) => {
@@ -31,6 +38,9 @@ function makeRequest(request) {
         })
         .then((responseData) => {
             instanceId = responseData.body.instanceId
+            if (responseData.body.needsHistory) {
+                // TODO: maybe eventually
+            }
             store.save(INSTANCE_ID_KEY, instanceId)
         })
 }

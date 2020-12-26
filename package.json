@@ -1,0 +1,45 @@
+{
+  "name": "drawing",
+  "version": "1.0.0",
+  "description": "Simple Canvas drawing application.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "build": "npm run pre-package && webpack --config webpack.config.js --production && npm run package",
+    "build:dev": "npm run pre-package && webpack --config webpack.config.js --development",
+    "dev-server": "webpack-dev-server --config webpack.config.js --open",
+    "pre-package": "/bin/bash pre-package.sh",
+    "package": "/bin/bash package.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alantheprice/drawing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alantheprice/drawing/issues"
+  },
+  "homepage": "https://github.com/alantheprice/drawing#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-typescript": "^7.10.4",
+    "babel": "^6.23.0",
+    "babel-loader": "^8.0.4",
+    "babel-preset-env": "^1.7.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "cli": "^1.0.1",
+    "css-loader": "^4.3.0",
+    "ele-mint": "2.2.0",
+    "es6-import": "1.6.5",
+    "html-webpack-plugin": "^4.4.1",
+    "sass": "^1.26.10",
+    "sass-loader": "^10.0.2",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.11.0"
+  }
+}

@@ -71,19 +71,23 @@
       function drawFace() {
         let fs = a / 5,
           faceRadius = a / 4,
-          face = getPoints(90, faceRadius, center),
+          face = getPoints(180, faceRadius, center),
           smile = getPoints(180, a / 7, center).slice(110, 160),
-          lEye = {x: center.x + (fs / 2.5), y: center.y - (fs / 2.5)},
-          rEye = {x: center.x - (fs / 2.5), y: center.y - (fs / 2.5)};
+          lEye = [{x: center.x + (fs / 2.5), y: center.y - (fs / 2.5)}],
+          rEye = [{x: center.x - (fs / 2.5), y: center.y - (fs / 2.5)}];
+        
+        lEye.push({x: lEye[0].x + 1, y: lEye[0].y + 1})
+        rEye.push({x: rEye[0].x + 1, y: rEye[0].y + 1})
 
+        face.push(face[0])
         ctx.font = `${faceRadius/ 3}px tahoma`;
         ctx.fillText('Draw for a bit!', center.x - faceRadius, center.y + (fs * 2));
-        drawPath(face, a/60, 8).then(() => {
-          return drawPath([lEye], a/30, 10);
+        drawPath(face, a/60, 10).then(() => {
+          return drawPath(lEye, a/30, 10);
         }).then(() => {
-          return drawPath([rEye], a/30, 10);
+          return drawPath(rEye, a/30, 10);
         }).then(() => {
-          return drawPath(smile, a/60, 7);
+          return drawPath(smile, a/60, 8);
         }).then(() => {
           setTimeout(() => finish(true), 500);
         })
@@ -129,7 +133,7 @@
           }, index * delayTime);
         })
         return new Promise((resolve, reject) => {
-          setTimeout(resolve, (points.length * delayTime + 300));
+          setTimeout(resolve, (points.length * delayTime + 350));
         })
       }
 
