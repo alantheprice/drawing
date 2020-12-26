@@ -5,12 +5,13 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "npm run build:dev && npm run dev-server",
     "build": "npm run pre-package && webpack --config webpack.config.js --production && npm run package",
     "build:dev": "npm run pre-package && webpack --config webpack.config.js --development",
     "dev-server": "webpack-dev-server --config webpack.config.js --open",
     "pre-package": "/bin/bash pre-package.sh",
-    "package": "/bin/bash package.sh"
+    "package": "/bin/bash package.sh",
+    "simple-serve": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -32,7 +33,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "cli": "^1.0.1",
     "css-loader": "^4.3.0",
-    "ele-mint": "2.2.0",
+    "ele-mint": "1.0.26",
     "es6-import": "1.6.5",
     "html-webpack-plugin": "^4.4.1",
     "sass": "^1.26.10",

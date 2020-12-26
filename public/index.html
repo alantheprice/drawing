@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DRAW</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#5b97f7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="DRAW" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#5b97f7" />
+    <link rel="apple-touch-icon" href="./icon/launcher-icon-8x.png" />
+    <link rel="apple-touch-startup-image" href="./icon/launcher-icon-8x.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <style>
+      .i-canvas {
+        position: relative;
+        margin: auto;
+        border-radius: 10px;
+        background-color: #eee;
+      }
+      .initializer {
+        position: fixed;
+        display: flex;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #707070;
+        z-index: 50;
+        transition: opacity 0.5s ease-in-out;
+        opacity: 1;
+      }
+      .initializer.hide {
+        opacity: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- for initial load it is helpful to set a few styles so the page doesn't need to wait for styles to load -->
+    <canvas
+      id="canvas"
+      style="width: 100vw; height: 100vh; background-color: #eee"
+    ></canvas>
+    <div id="app"></div>
+    <div id="initalizer" class="initializer hide">
+      <canvas id="initialAnimator" class="i-canvas"></canvas>
+    </div>
+    <script>
+      (function () {
+        let LK = "loaded",
+          ic = document.getElementById("initialAnimator"),
+          wh = window.innerHeight,
+          ww = window.innerWidth,
+          a = Math.min(wh * 0.8, ww * 0.8);
+
+        setSize();
+        ic.style = `width: ${a}px; height: ${a}px`;
+        ic.width = a + "";
+        ic.height = a + "";
+
+        let center = { y: a / 2, x: a / 2 };
+        let ctx = ic.getContext("2d");
+
+        if (localStorage.getItem(LK) === "true") {
+          return finish();
+        } else {
+          initalizer.classList.remove("hide");
+        }
+
+        drawFace();
+        localStorage.setItem(LK, "true");
+
+        function drawFace() {
+          let fs = a / 5,
+            faceRadius = a / 4,
+            face = getPoints(180, faceRadius, center),
+            smile = getPoints(180, a / 7, center).slice(110, 160),
+            lEye = [{ x: center.x + fs / 2.5, y: center.y - fs / 2.5 }],
+            rEye = [{ x: center.x - fs / 2.5, y: center.y - fs / 2.5 }];
+
+          lEye.push({ x: lEye[0].x + 1, y: lEye[0].y + 1 });
+          rEye.push({ x: rEye[0].x + 1, y: rEye[0].y + 1 });
+
+          face.push(face[0]);
+          ctx.font = `${faceRadius / 3}px tahoma`;
+          ctx.fillText(
+            "Draw for a bit!",
+            center.x - faceRadius,
+            center.y + fs * 2
+          );
+          drawPath(face, a / 60, 10)
+            .then(() => {
+              return drawPath(lEye, a / 30, 10);
+            })
+            .then(() => {
+              return drawPath(rEye, a / 30, 10);
+            })
+            .then(() => {
+              return drawPath(smile, a / 60, 8);
+            })
+            .then(() => {
+              setTimeout(() => finish(true), 500);
+            });
+        }
+
+        function arrayAtLength(count) {
+          return Array(count).join(",").split(",");
+        }
+
+        function getPoints(count, radius, c) {
+          c = c || {
+            x: 160,
+            y: 300,
+          };
+          return arrayAtLength(count).map((_, index) => {
+            radians = (2 * index * Math.PI) / count;
+            return {
+              x: xValue(radians),
+              y: yValue(radians),
+            };
+          });
+
+          function xValue(radians) {
+            return c.x + radius * Math.cos(radians);
+          }
+
+          function yValue(radians) {
+            return c.y - radius * Math.sin(radians);
+          }
+        }
+
+        function drawPath(points, lw, delayTime) {
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          ctx.lineWidth = lw || 10;
+          ctx.lineCap = "round";
+          ctx.strokeStyle = "#303030";
+          points.forEach((ps, index) => {
+            setTimeout(() => {
+              ctx.lineTo(ps.x, ps.y);
+              ctx.stroke();
+            }, index * delayTime);
+          });
+          return new Promise((resolve, reject) => {
+            setTimeout(resolve, points.length * delayTime + 350);
+          });
+        }
+
+        function setSize() {
+          let w = window.innerWidth,
+            h = window.innerHeight,
+            can = document.getElementById("canvas"),
+            dCtx = can.getContext("2d");
+          can.width = w + "";
+          can.height = h + "";
+          can.style = `width: ${w}px; height: ${h}px;`;
+          dCtx.fillStyle = "#eee";
+          dCtx.fillRect(0, 0, w, h);
+        }
+
+        function finish(animate) {
+          let rm = () => initalizer.parentElement.removeChild(initalizer);
+          if (!animate) {
+            return rm();
+          }
+          initalizer.classList.add("hide");
+          setTimeout(rm, 1000);
+        }
+      })();
+    </script>
+    <noscript>
+      <h1 style="color: #ff0000; text-align: center; margin: 48% 50px 0 50px">
+        Sorry Javascript is disabled, a drawing application doesn't work without
+        Javascript. You are out of luck.
+      </h1>
+    </noscript>
+    <%= htmlWebpackPlugin.tags.bodyTags %>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </body>
+</html>
