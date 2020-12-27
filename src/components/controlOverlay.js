@@ -1,4 +1,4 @@
-import { init, clear, undo, updateSettings, downloadImage } from '../drawing/drawing'
+import { init, clearAll, undo, updateSettings, downloadImage } from '../drawing/drawing'
 import { e } from '../templater/renderer'
 import { colorButton } from './colorButton'
 import { brushControl } from './brushControl'
@@ -49,7 +49,7 @@ export function controlOverlay(config) {
 function getButtons() {
     let buttons = [
         div({ class: 'c-editing-buttons' },
-            button({ class: 'btn circle clear-btn', onclick: function () { clear(true) } },
+            button({ class: 'btn circle clear-btn', onclick: clearAll },
                 i({ class: 'material-icons md-light md-36' }, 'delete_forever')
             ),
             button({ class: 'btn circle undo-btn', onclick: undo },

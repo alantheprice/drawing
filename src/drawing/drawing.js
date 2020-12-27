@@ -27,10 +27,13 @@ export function init() {
   addDragHandler({ element: canvasScratch }, path.startDrawing())
 }
 
-export function clear(ctx, all) {
-  if (all) {
-    path.clearBackstack()
-  }
+export function clearAll() {
+  path.clearBackstack()
+  clear(canvas.getContext("2d"))
+  clear(canvasScratch.getContext("2d"))
+}
+
+function clear(ctx) {
   ctx.clearRect(0, 0, canvas.width / ratio, canvas.height / ratio)
 }
 

@@ -53,7 +53,7 @@ export class Path {
         moveRE.preventDefault()
         moveRE.stopPropagation()
         path.push(moveXY)
-        this.drawLine(path.slice(-2), this.settings, this.scratchCtx, this.clear)
+        this.drawLine(path, this.settings, this.scratchCtx, this.clear)
       },
       finish: () => {
         this.savePath(path, this.settings)
@@ -75,9 +75,10 @@ export class Path {
       return
     }
     points = points.filter(f => !!f)
-    if (typeof clear === "function") {
+    if (typeof clear === "function" && points.length) {
       clear(ctx)
     }
+
     ctx.beginPath()
     ctx.moveTo(points[0].x, points[0].y)
     points.forEach((points) => {
@@ -87,6 +88,7 @@ export class Path {
     ctx.lineCap = 'round'
     ctx.strokeStyle = settings.color.getAsCssValue()
     ctx.stroke()
+    console.log('finished build', Date.now())
   }
 
   /**
@@ -112,14 +114,13 @@ export class Path {
       })
   }
 
-  drawAllPaths(paths, context) {
+  drawAllPaths(paths) {
     if (!paths || !paths.length) {
       return
     }
     paths.forEach((pathDef) => {
-      console.log(pathDef)
       let settings = Setting.fromObject(pathDef.settings)
-      this.drawLine(pathDef.path, settings, context)
+      this.drawLine(pathDef.path, settings)
     })
   }
 
