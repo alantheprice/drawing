@@ -21,7 +21,7 @@ function setupCanvas(cs) {
   ctx.scale(ratio, ratio);
   return cs
 }
-const path = new Path(setupCanvas(canvas), setupCanvas(canvasScratch), clear)
+const path = new Path(setupCanvas(canvas), setupCanvas(canvasScratch), clear, clearScratch)
 
 export function init() {
   addDragHandler({ element: canvasScratch }, path.startDrawing())

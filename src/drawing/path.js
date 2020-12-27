@@ -54,8 +54,7 @@ export class Path {
         moveRE.preventDefault()
         moveRE.stopPropagation()
         path.push(moveXY)
-        // this.clearScratch()
-        this.drawLine(path.slice(-2), this.settings, this.scratchCtx)
+        this.drawLine(path.slice(-2), this.settings, this.scratchCtx, this.clearScratch)
       },
       finish: () => {
         this.savePath(path, this.settings)
@@ -71,12 +70,15 @@ export class Path {
    * @param {}
    * @memberof Path
    */
-  drawLine(points, settings, context) {
+  drawLine(points, settings, context, clear) {
     const ctx = context || this.ctx
     if (!points || !points.length) {
       return
     }
     points = points.filter(f => !!f)
+    if (typeof clear === "function") {
+      // clear()
+    }
     ctx.beginPath()
     ctx.moveTo(points[0].x, points[0].y)
     points.forEach((points) => {
