@@ -21,24 +21,16 @@ function setupCanvas(cs) {
   ctx.scale(ratio, ratio);
   return cs
 }
-const path = new Path(setupCanvas(canvas), setupCanvas(canvasScratch), clear, clearScratch)
+const path = new Path(setupCanvas(canvas), setupCanvas(canvasScratch), clear)
 
 export function init() {
   addDragHandler({ element: canvasScratch }, path.startDrawing())
 }
 
-export function clear(all) {
-  const ctx = canvas.getContext("2d");
+export function clear(ctx, all) {
   if (all) {
     path.clearBackstack()
   }
-  ctx.clearRect(0, 0, canvas.width / ratio, canvas.height / ratio)
-  store.remove('paths')
-  clearScratch()
-}
-
-export function clearScratch() {
-  const ctx = canvasScratch.getContext("2d");
   ctx.clearRect(0, 0, canvas.width / ratio, canvas.height / ratio)
 }
 

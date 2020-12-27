@@ -5,11 +5,10 @@ const store = new LocalStore()
 
 export class Path {
 
-  constructor(canvas, canvasScratch, clear, clearScratch) {
+  constructor(canvas, canvasScratch, clear) {
     this.ctx = canvas.getContext("2d")
     this.scratchCtx = canvasScratch.getContext("2d")
     this.clear = clear
-    this.clearScratch = clearScratch
     this.paths = []
     this.redo = []
     this.canvas = canvas
@@ -20,7 +19,7 @@ export class Path {
   }
 
   undo() {
-    this.clear()
+    this.clear(this.ctx)
     this.redo.push(this.paths.pop())
     this.drawAllPaths(this.paths)
   }
@@ -54,7 +53,7 @@ export class Path {
         moveRE.preventDefault()
         moveRE.stopPropagation()
         path.push(moveXY)
-        this.drawLine(path.slice(-2), this.settings, this.scratchCtx, this.clearScratch)
+        this.drawLine(path.slice(-2), this.settings, this.scratchCtx, this.clear)
       },
       finish: () => {
         this.savePath(path, this.settings)
@@ -77,7 +76,7 @@ export class Path {
     }
     points = points.filter(f => !!f)
     if (typeof clear === "function") {
-      // clear()
+      clear(ctx)
     }
     ctx.beginPath()
     ctx.moveTo(points[0].x, points[0].y)
@@ -99,7 +98,8 @@ export class Path {
    */
   savePath(path, settings) {
     this.paths.push({ path: path, settings: settings.copy() })
-    this.clear()
+    this.clear(this.ctx)
+    this.clear(this.scratchCtx)
     this.drawAllPaths(this.paths)
     store.save('paths', this.paths)
   }
