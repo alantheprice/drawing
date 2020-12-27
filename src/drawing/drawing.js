@@ -4,31 +4,42 @@ import { addDragHandler } from '../eventHandling/event'
 const store = new LocalStore()
 
 const canvas = document.getElementById('canvas')
+const canvasScratch = document.getElementById('canvas-scratch-pad')
 const ratio = window.devicePixelRatio;
 const canvasHeight = window.innerHeight;
 const canvasWidth = window.innerWidth;
+setupCanvas(canvas)
+setupCanvas(canvasScratch)
 
-// fill screen with canvas
-canvas.width = canvasWidth * ratio;
-canvas.height = canvasHeight * ratio;
-canvas.style.width = canvasWidth + "px";
-canvas.style.height = canvasHeight + "px";
-const ctx = canvas.getContext("2d");
-ctx.scale(ratio, ratio);
-const path = new Path(canvas, ctx, clear)
+function setupCanvas(cs) {
+  // fill screen with canvas
+  cs.width = canvasWidth * ratio;
+  cs.height = canvasHeight * ratio;
+  cs.style.width = canvasWidth + "px";
+  cs.style.height = canvasHeight + "px";
+  const ctx = cs.getContext("2d");
+  ctx.scale(ratio, ratio);
+  return cs
+}
+const path = new Path(setupCanvas(canvas), setupCanvas(canvasScratch), clear)
 
 export function init() {
-  addDragHandler({ element: canvas }, path.startDrawing())
+  addDragHandler({ element: canvasScratch }, path.startDrawing())
 }
 
 export function clear(all) {
+  const ctx = canvas.getContext("2d");
   if (all) {
     path.clearBackstack()
   }
   ctx.clearRect(0, 0, canvas.width / ratio, canvas.height / ratio)
-  ctx.fillStyle = "#eee";
-  ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
   store.remove('paths')
+  clearScratch()
+}
+
+export function clearScratch() {
+  const ctx = canvasScratch.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width / ratio, canvas.height / ratio)
 }
 
 export function undo() {

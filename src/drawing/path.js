@@ -5,12 +5,15 @@ const store = new LocalStore()
 
 export class Path {
 
-  constructor(canvas, context, clear) {
-    this.ctx = context
+  constructor(canvas, canvasScratch, clear, clearScratch) {
+    this.ctx = canvas.getContext("2d")
+    this.scratchCtx = canvasScratch.getContext("2d")
     this.clear = clear
+    this.clearScratch = clearScratch
     this.paths = []
     this.redo = []
     this.canvas = canvas
+    this.canvasScratch = canvasScratch
     // setting defaults
     this.settings = new Setting(new Color(20, 45, 200), 5, 1)
     this.restorePath()
@@ -51,7 +54,8 @@ export class Path {
         moveRE.preventDefault()
         moveRE.stopPropagation()
         path.push(moveXY)
-        this.drawLine(path.slice(-2), this.settings)
+        // this.clearScratch()
+        this.drawLine(path.slice(-2), this.settings, this.scratchCtx)
       },
       finish: () => {
         this.savePath(path, this.settings)
@@ -64,22 +68,24 @@ export class Path {
    * 
    * @param {any} points 
    * @param {Setting} settings 
+   * @param {}
    * @memberof Path
    */
-  drawLine(points, settings) {
+  drawLine(points, settings, context) {
+    const ctx = context || this.ctx
     if (!points || !points.length) {
       return
     }
     points = points.filter(f => !!f)
-    this.ctx.beginPath()
-    this.ctx.moveTo(points[0].x, points[0].y)
+    ctx.beginPath()
+    ctx.moveTo(points[0].x, points[0].y)
     points.forEach((points) => {
-      this.ctx.lineTo(points.x, points.y)
+      ctx.lineTo(points.x, points.y)
     })
-    this.ctx.lineWidth = settings.lineWidth
-    this.ctx.lineCap = 'round'
-    this.ctx.strokeStyle = settings.color.getAsCssValue()
-    this.ctx.stroke()
+    ctx.lineWidth = settings.lineWidth
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = settings.color.getAsCssValue()
+    ctx.stroke()
   }
 
   /**
@@ -90,7 +96,7 @@ export class Path {
    * @memberof Path
    */
   savePath(path, settings) {
-    this.paths.push({path: path, settings: settings.copy()})
+    this.paths.push({ path: path, settings: settings.copy() })
     this.clear()
     this.drawAllPaths(this.paths)
     store.save('paths', this.paths)
@@ -98,18 +104,21 @@ export class Path {
 
   restorePath() {
     store.load('paths')
-      .then((paths) => this.drawAllPaths(paths))
+      .then((paths) => {
+        this.paths = paths || []
+        this.drawAllPaths(paths)
+      })
   }
 
-  drawAllPaths(paths) {
+  drawAllPaths(paths, context) {
     if (!paths || !paths.length) {
       return
     }
     paths.forEach((pathDef) => {
+      console.log(pathDef)
       let settings = Setting.fromObject(pathDef.settings)
-      this.drawLine(pathDef.path, settings)
+      this.drawLine(pathDef.path, settings, context)
     })
-    this.paths = paths
   }
 
   clearBackstack() {

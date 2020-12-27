@@ -40,10 +40,9 @@
 
   <body>
     <!-- for initial load it is helpful to set a few styles so the page doesn't need to wait for styles to load -->
-    <canvas
-      id="canvas"
-      style="width: 100vw; height: 100vh; background-color: #eee"
-    ></canvas>
+
+    <canvas id="canvas-scratch-pad" class="canvas"></canvas>
+    <canvas id="canvas" class="canvas base"></canvas>
     <div id="app"></div>
     <div id="initalizer" class="initializer hide">
       <canvas id="initialAnimator" class="i-canvas"></canvas>
